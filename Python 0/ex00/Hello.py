@@ -28,3 +28,6 @@ print(ft_dict)
 # tuple : fixed order / fixed value, cannot change value -> have to recreate
 # set : no fixed order / remove dups
 # dict :  [index] : [value] Stores data in key → value pairs (like container in c++)
+
+
+
