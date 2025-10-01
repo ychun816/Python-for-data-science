@@ -8,6 +8,9 @@ https://www.youtube.com/watch?v=eWRfhZUzrAc
 https://www.youtube.com/watch?v=t8pPdKYpowI
 
 ### Documentation
+- Python Standard Library
+https://docs.python.org/3/library/
+
 - Python Tutorial
 https://www.w3schools.com/python/
 
