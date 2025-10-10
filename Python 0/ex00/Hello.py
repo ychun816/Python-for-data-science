@@ -29,5 +29,3 @@ print(ft_dict)
 # set : no fixed order / remove dups
 # dict :  [index] : [value] Stores data in key → value pairs (like container in c++)
 
-
-
