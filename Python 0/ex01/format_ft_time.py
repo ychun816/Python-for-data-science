@@ -19,7 +19,6 @@ now = datetime.datetime.now()
 format_date = now.strftime("%b %d %Y")
 
 
-
 #print
 print(f"Seconds since January 1, 1970: {format_normal} or {format_sci} in scientific notation")
 print(f"{format_date}")
