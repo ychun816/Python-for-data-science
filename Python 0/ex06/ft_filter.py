@@ -4,7 +4,7 @@
 # define a function -> tores the instructions for later use
 def ft_filter(function, iterable):
     """Return a list of elements from iterable where function(element) is True."""
-    return [item for item in literable if function(item)] => function(item) #-> is_even(item)
+    return [item for item in literable if function(item)] #=> function(item) #-> is_even(item)
 
     is_even = lambda x: x % 2 == 0
     numbers = [1, 2, 3, 4, 5]
@@ -37,16 +37,16 @@ print(ft_filter(is_even, nbs))
 
 #### NOTES ######################
 
-return [item for item in iterable if function(item)]
--> “For every element in iterable, include it in a new list.”
+# return [item for item in iterable if function(item)]
+# -> “For every element in iterable, include it in a new list.”
 
-if function(item)
-[item for item in iterable if function(item)]
--> filter condition
--> function(item) should return True or False
--> Only include item in the new list if the function returns True.
+# if function(item)
+# [item for item in iterable if function(item)]
+# -> filter condition
+# -> function(item) should return True or False
+# -> Only include item in the new list if the function returns True.
 
 
-lambda → creates an anonymous (unnamed) function
+# lambda → creates an anonymous (unnamed) function
 
 ################################
