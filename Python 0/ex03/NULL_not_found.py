@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 #prototype
 def NULL_not_found(object: any) -> int:
