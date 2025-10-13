@@ -75,5 +75,7 @@ if __name__ == "__main__":
 # .strip()
 # remove trailing space
 
+# end="" means:
+# “Don’t add a newline after printing —> end with nothing (empty string)
 
 #############
