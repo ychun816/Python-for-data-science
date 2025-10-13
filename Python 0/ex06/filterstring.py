@@ -44,6 +44,9 @@ if __name__ == "__main__":
 
 ### NOTES ###
 
+# ft_filter → refers to the module (the whole file)
+# ft_filter.ft_filter → refers to the function inside that module
+
 # function_name(argument1, argument2)
 # -> ft_filter → the function you defined (your custom version of Python’s built-in filter())
 # -> is_longer(arg1) → another function, passed as data (not called yet!)

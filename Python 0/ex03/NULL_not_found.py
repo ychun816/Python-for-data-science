@@ -18,7 +18,6 @@ def NULL_not_found(object: any) -> int:
     return 0 #success
 
 
-
 #### NOTES ######################
 
 # (object: any) → input parameter with type hint (any = anything)
