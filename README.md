@@ -20,7 +20,7 @@ https://wiki.python.org/moin/BeginnersGuide
 
 
 ## Python 0
-
+### Basic Types
 Python has a few basic built-in data types that are **super important**:
 - **List** 📋  
 - **Tuple** 🎁  
@@ -115,6 +115,14 @@ Ordered since Python 3.7 (insertion order kept).
 
 
 > ℹ️ *Dictionaries keep insertion order in Python 3.7+ (so order is predictable now).
+
+
+### Packaging
+- Python Package setup :
+https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkA5azaall
+
+
+
 
 
 
