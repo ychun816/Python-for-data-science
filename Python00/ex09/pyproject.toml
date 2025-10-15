@@ -7,8 +7,11 @@ name = "ft_package"
 version = "0.0.1"
 description = "A sample test package for learning Python packaging"
 authors = [
-  { name="chunchun", email="youremail@example.com" }
+  { name = "hottie", email = "yilin@student.42.fr" }
 ]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/hottie/ft_package"

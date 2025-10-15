@@ -1,8 +1,11 @@
-#!usr/bin/env python3
+
+
+#!/usr/bin/env python3
 
 from ft_package.count_in_list import count_in_list
-    __version__ = "0.0.1"
-    __author__ = "hottie"
+
+__version__ = "0.0.1"
+__author__ = "hottie"
 
 
 #OUTPUT
