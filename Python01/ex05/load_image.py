@@ -1,7 +1,5 @@
 #! usr/bin/env python3
 
-#You have to handle, at least, JPG and JPEG format.
-
 #use PIL & numPY lib # do i need pathlib and typing? -> to check
 from PIL import Image
 import numpy as np
@@ -34,7 +32,6 @@ def ft_load(path: str) -> np.ndarray:
         return "Error: File not found"
     except Exception as e:
         return f"Error: {e}"
-
 
 #method2: using pathlib / typing
 # from PIL import Image
@@ -88,11 +85,3 @@ def ft_load(path: str) -> np.ndarray:
 #     except Exception as e:
 #         print(f"Unexpected error: {e}")
 #         return None
-
-
-
-
-
-# Notes:
-# - Pillow's Image.open accepts absolute paths, relative paths, or file-like objects.
-# - If you need HEIC/HEIF support, consider installing 'pillow-heif' or using 'pyheif'.
