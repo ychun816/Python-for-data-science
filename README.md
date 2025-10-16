@@ -103,7 +103,7 @@ Values can be changed.
 Ordered since Python 3.7 (insertion order kept).
 
 
-## Summary Table
+### Summary Table of all types
 
 | Data Type    | Syntax Example          | Ordered? | Mutable? | Allows Duplicates? | How to Access / Modify                                          |
 | ------------ | ----------------------- | -------- | -------- | ------------------ | --------------------------------------------------------------- |
@@ -112,18 +112,43 @@ Ordered since Python 3.7 (insertion order kept).
 | **Set** 🔀   | `{"Hello", "Paris!"}`   | ❌ No     | ✅ Yes    | ❌ No (only unique) | Check membership → `"Hello" in set` <br> Add → `set.add("new")` |
 | **Dict** 📖  | `{"Hello": "42Paris!"}` | ✅ Yes*   | ✅ Yes    | Keys ❌, Values ✅   | By key → `dict["Hello"]` <br> Change → `dict["Hello"] = "Hi"`   |
 
-
-
 > ℹ️ *Dictionaries keep insertion order in Python 3.7+ (so order is predictable now).
 
+
+
+### Common Built-in Exceptions (Python predefined errors)**
+
+```
+| Exception Name      | When it Happens                | Example                          |
+| ------------------- | ------------------------------ | -------------------------------- |
+| `FileNotFoundError` | When file path does not exist  | `open("no_file.txt")`            |
+| `ValueError`        | Wrong value type               | `int("abc")`                     |
+| `TypeError`         | Wrong data type used           | `"hi" + 5`                       |
+| `IndexError`        | List index out of range        | `[1,2][5]`                       |
+| `KeyError`          | Dictionary key not found       | `d = {"a":1}; d["b"]`            |
+| `ZeroDivisionError` | Dividing by zero               | `10 / 0`                         |
+| `ImportError`       | Import fails                   | `import not_existing_module`     |
+| `AttributeError`    | Object has no attribute        | `"hi".append(3)`                 |
+| `NameError`         | Variable not defined           | `print(x)`                       |
+| `RuntimeError`      | Generic runtime error          | `raise RuntimeError("oops")`     |
+| `SyntaxError`       | Invalid Python syntax          | `if True print("hi")`            |
+| `IndentationError`  | Wrong indentation              | (bad spacing)                    |
+| `OSError`           | System-related error           | File or OS issue                 |
+| `MemoryError`       | Out of memory                  | Very large data                  |
+| `StopIteration`     | When iterator runs out         | `next(it)` on exhausted iterator |
+| `EOFError`          | End of file input unexpectedly | `input()` from empty stdin       |
+```
 
 ### Packaging
 - Python Package setup :
 https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkA5azaall
 
 
-
-
+## Python 0
+### libraries
+- numbPy explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkWhZSaaxx
+- PIL(Pillow) explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/r1b6q_C6eg
+- Brief on image handling libraries : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/Sk13McAaee
 
 
 ¬_¬　ᙏ̤̫　ᕑᗢᓫ 　　. ̫ .　ꪔ̤̮　ꈍꈊꈍ ꪔ̤̥
