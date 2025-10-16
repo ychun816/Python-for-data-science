@@ -1,0 +1,40 @@
+#! usr/bin/env python3
+
+#You have to handle, at least, JPG and JPEG format.
+
+#use PIL & numPY lib # do i need pathlib and typing? -> to check
+from PIL import Image
+import numpy as np
+# from pathlib import Path
+# from typing import Union
+
+def ft_load(path: str) -> np.ndarray:
+    try:
+        # Load the image
+        img = Image.open(path) #put jpg path here? 
+        
+        # Check supported formats
+        if img.format not in ["JPEG", "JPG"]:
+            return f"Error: Unsupported image format ({img.format})"
+        
+        print(f"The format of the image is: {img.format}")
+        
+        # Convert to RGB (handle grayscale or RGBA)
+        img = img.convert("RGB")
+        
+        # Convert to NumPy array
+        img_array = np.array(img)
+        
+        # Print shape
+        print(f"The shape of image is: {img_array.shape}")
+        
+        return img_array
+
+    except FileNotFoundError:
+        return "Error: File not found"
+    except Exception as e:
+        return f"Error: {e}"
+
+# Notes:
+# - Pillow's Image.open accepts absolute paths, relative paths, or file-like objects.
+# - If you need HEIC/HEIF support, consider installing 'pillow-heif' or using 'pyheif'.
