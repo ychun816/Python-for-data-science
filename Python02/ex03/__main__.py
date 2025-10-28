@@ -3,13 +3,13 @@
 import sys
 import os
 
-from projection_life import life_expectancy
+from projection_life import gdp_life_expectancy
 
 
 def main(av):
     try:
         assert len(av) == 2, "usage: __main__.py 'year'"
-        life_expectancy(av[1])
+        gdp_life_expectancy(av[1])
 
     except Exception as e:
         print(f"Exception: {e}")

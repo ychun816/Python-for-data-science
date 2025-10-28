@@ -126,7 +126,7 @@ def gdp_life_expectancy(year: str) -> None:
                 ),
                 Country=lambda d: d["country"]  # rename column for plotting
             )
-
+        )
         # Render the scatter plot
         render_plot(df_life_gdp[['Country', 'Life Expectancy', 'GDP']], year)
 
@@ -134,28 +134,3 @@ def gdp_life_expectancy(year: str) -> None:
     except Exception as e:
         print(f"An error occurred in gdp_life_expectancy: {e}")
         raise
-
-
-
-
-
-
-
-
-
-
-
-
-
-def life_expectancy(year:str): 
-    """
-    Placeholder function for life expectancy projections.
-
-    Args:
-        year (str): Year for projection.
-    """
-    try:
-
-
-
-    
