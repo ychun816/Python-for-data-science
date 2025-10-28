@@ -2,6 +2,7 @@
 
 import sys
 import os                     # for file path handling
+import re
 import numpy as np            # for array manipulation
 import pandas as pd           # for DataFrame handling
 
@@ -46,7 +47,7 @@ def population_total(country:str, compare_country: str) -> None:
     df = df[df["country"].isin(countries)] #returns Boolean Series (True if in countries). # df[...] → selects only rows where condition is True
 
     # --- 4. Define number unpacker for abbreviations ---
-    # {}library -> 1e3 → 1000, 1e6 → 1,000,000, 1e9 → 1,000,000,000.
+    # {}library (key: value) -> 1e3 → 1000, 1e6 → 1,000,000, 1e9 → 1,000,000,000.
     tens = {"k": 1e3, "m": 1e6, "b": 1e9}
     
     def unpack(x):
@@ -78,6 +79,7 @@ def population_total(country:str, compare_country: str) -> None:
     )
 
     # --- 6. Keep only years 1800–2050 ---
+    #convert year column to integer #.between(1800, 2050) → boolean mask for values in range
     df_long = df_long[df_long["Year"].astype(int).between(1800, 2050)]
 
     # --- 7. Plot using Seaborn (delegated) ---
@@ -86,7 +88,39 @@ def population_total(country:str, compare_country: str) -> None:
     ax.set_title(f"Population Projection: {country} vs {compare_country}", fontsize=14)
     ax.set_xlabel("Year", fontsize=10)
     ax.set_ylabel("Population", fontsize=10)
-    plt.show()
+
+
+    ################# to test display the graphics !!!! 
+    # plt.show()
+    # Save plot to a file (sanitized filename) so it can be viewed in headless environments
+    def _sanitize(name: str) -> str:
+        """Return a portable, short filename-friendly version of `name`.
+
+        - Use basename to avoid embedded paths
+        - Replace any run of unsafe chars with a single underscore
+        - Allow letters, numbers, dot, underscore and hyphen
+        - Strip leading/trailing separators
+        - If result is empty, fall back to a short hash-based name
+        """
+        # avoid paths coming from user input
+        base = os.path.basename(name or "")
+        # replace runs of disallowed characters with a single underscore
+        sanitized = re.sub(r"[^A-Za-z0-9._-]+", "_", base)
+        sanitized = sanitized.strip("._-")
+        if not sanitized:
+            # short stable hash to avoid collisions and empty names
+            import hashlib
+
+            h = hashlib.sha1((name or "").encode("utf-8", errors="ignore")).hexdigest()[:8]
+            sanitized = f"plot_{h}"
+        # keep filename reasonably short
+        return sanitized[:200]
+
+    fname = f"population_{_sanitize(country)}_vs_{_sanitize(compare_country)}.png"
+    outpath = os.path.join(os.path.dirname(__file__), fname)
+    plt.savefig(outpath, bbox_inches="tight")
+    print(f"Saved plot to {outpath}")
+    plt.close()
 
 
 
@@ -101,5 +135,18 @@ def population_total(country:str, compare_country: str) -> None:
 # | **5. `melt()` + `assign()`** | Turns wide data → long form + applies unpacking in one chain. | Pandas chaining is faster and cleaner than manual loops. |
 # | **6. Year filtering**        | Keeps only relevant 1800–2050 range.                          | Avoids plotting noise.                                   |
 # | **7. Plot inline**           | Uses seaborn defaults for styling.                            | Simple, modern, readable plotting.                       |
+
+
+# df.melt() → wide → long format. Each year becomes a row.
+# id_vars="country" → keep country as identifier.
+# var_name="Year" → old column names become 'Year'.
+# value_name="Population" → old values become 'Population'.
+# .assign(Population=lambda d: d["Population"].map(unpack)) → apply unpack function to each value.
+# .dropna() → remove missing values.
+
+# sns.lineplot() → creates a line plot: x vs y, optionally grouped by hue.
+# data=df_long → DataFrame to plot.
+# hue="country" → different lines for each country.
+
 
 ##########
