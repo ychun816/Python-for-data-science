@@ -3,6 +3,7 @@
 
 import sys
 import os
+from aff_pop import population_total
 
 
 def main(argv):
