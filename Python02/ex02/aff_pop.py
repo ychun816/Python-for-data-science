@@ -78,17 +78,44 @@ def population_total(country:str, compare_country: str) -> None:
           .dropna()
     )
 
-    # --- 6. Keep only years 1800–2050 ---
-    #convert year column to integer #.between(1800, 2050) → boolean mask for values in range
+    # --- 6. Keep only years 1800–2050 and ensure Year is numeric ---
+    # convert Year to int for numeric plotting and set range 1800–2050
     df_long = df_long[df_long["Year"].astype(int).between(1800, 2050)]
+    # now coerce the Year column to integers (important for numeric x-axis)
+    df_long["Year"] = df_long["Year"].astype(int)
 
     # --- 7. Plot using Seaborn (delegated) ---
     sns.set_theme()
     ax = sns.lineplot(data=df_long, x="Year", y="Population", hue="country")
-    ax.set_title(f"Population Projection: {country} vs {compare_country}", fontsize=14)
+    ax.set_title(f"Population Projections", fontsize=14)
     ax.set_xlabel("Year", fontsize=10)
     ax.set_ylabel("Population", fontsize=10)
 
+    # --- 8. Set ticks/formatting requested by user ---
+    # X ticks: specific years
+    xticks = [1800, 1840, 1880, 1920, 1960, 2000, 2040]
+    ax.set_xticks(xticks)
+    ax.set_xlim(1800, 2050)
+    ax.set_xticklabels([str(t) for t in xticks], rotation=0)
+
+    # Y ticks: 20M intervals, formatted as '20M', '40M', ...
+    try:
+        y_step = 20_000_000
+        ymin = int(df_long["Population"].min())
+        ymax = int(df_long["Population"].max())
+        ystart = max(0, (ymin // y_step) * y_step)
+        yticks = np.arange(ystart, ymax + y_step, y_step)
+        if len(yticks) == 0:
+            yticks = np.array([0, ymax])
+        ax.set_yticks(yticks)
+        from matplotlib.ticker import FuncFormatter
+
+        def _millions(x, pos=None):
+            return f"{int(round(x / 1e6))}M"
+
+        ax.yaxis.set_major_formatter(FuncFormatter(_millions))
+    except Exception:
+        pass
 
     ################# to test display the graphics !!!! 
     # plt.show()
