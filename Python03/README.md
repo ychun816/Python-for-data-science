@@ -90,3 +90,82 @@ Here’s a side-by-side ASCII diagram showing how **object storage and reference
 | Lifetime        | Until all references are gone | Until scope ends or `delete` is called      |
 
 ---
+
+## ex00
+
+```sql
+      ┌────────────┐
+      │ Character  │  <-- Abstract Base Class (ABC)
+      │------------│
+      │ first_name │
+      │ is_alive   │
+      │ die()      │  <-- Abstract method
+      └─────┬──────┘
+            │
+      ┌─────▼──────┐
+      │   Stark    │  <-- Concrete Class
+      │------------│
+      │ die()      │  <-- Implements Character.die()
+      └────────────┘
+
+```
+- Character: Cannot be instantiated; defines die() as abstract.
+- Stark: Inherits Character and implements die().
+
+## ex01
+
+```sql
+      ┌────────────┐
+      │ Character  │
+      │------------│
+      │ first_name │
+      │ is_alive   │
+      │ die()      │
+      └─────┬──────┘
+            │
+   ┌────────▼────────┐
+   │   Stark         │
+   │----------------│
+   │ __str__/__repr__│
+   │ classmethods    │
+   └─────────────────┘
+
+```
+- Adds `__str__`, `__repr__`, and classmethods to create chained family members.
+
+## ex02
+
+```sql
+      ┌───────────────┐
+      │    ClapTrap    │
+      └─────┬─────────┘
+            │
+      ┌─────▼─────────┐
+      │   ScavTrap     │
+      └─────┬─────────┘
+            │
+      ┌─────▼─────────┐
+      │ FragTrap      │
+      └─────┬─────────┘
+            │
+      ┌─────▼─────────┐
+      │ DiamondTrap   │
+      │---------------│
+      │ multiple inh. │
+      │ @property     │
+      │ setter/getter │
+      └───────────────┘
+
+```
+- DiamondTrap inherits from both ScavTrap and FragTrap, which themselves inherit from ClapTrap.
+- This forms the diamond problem, handled in Python by MRO (Method Resolution Order).
+- Uses properties to safely manage attributes like name, hit_points, etc.
+
+✅ Key Takeaways from the Diagrams
+1. ABC + Abstract Methods → Forces subclasses to implement key functionality (Exercise 00).
+2. Single Inheritance → Simple parent-child relationships (Exercise 01).
+3. Multiple Inheritance + Diamond Problem → Python resolves conflicts using MRO (Exercise 02).
+4. @property and @setter → Manage access to sensitive attributes safely.
+
+## ex03
+
