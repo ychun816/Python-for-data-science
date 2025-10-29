@@ -167,5 +167,722 @@ Here’s a side-by-side ASCII diagram showing how **object storage and reference
 3. Multiple Inheritance + Diamond Problem → Python resolves conflicts using MRO (Exercise 02).
 4. @property and @setter → Manage access to sensitive attributes safely.
 
+---
+
+# RANDOM NOTES TO SORT
+
+## ex00-ex01 syntax 
+
+questions:
+
+- what's self?
+- what's super?
+- what's difference: @classmethod @abstractmethod
+- syntax meaning and usage example :
+__main__
+__file__
+__init__
+__repr__
+__str__
+__dict__
+
+- what's create "chain creation"?:
+    @classmethod
+    def create(cls, first_name, is_alive=True):
+        """Class method to create a new Baratheon instance."""
+        return cls(first_name, is_alive)  # cls represents the class itself (Baratheon)
+        # This allows chained creation, like: Baratheon.create("Robert").create(...)
+
+- @property @[property].setter : like c++ getter() and setter()? 
+
+
+
+class Character(ABC):
+    def __init__(self, first_name: str, is_alive: bool = True):
+    self.first_name = first_name      # Store the provided 
+    self.is_alive = is_alive          # Store the provided is_alive 
+
+
+    @abstractmethod
+
+class Stark(Character):
+    def __init__(self, first_name: str, is_alive: bool = True):
+
+
+
+class Baratheon(Character):
+    @classmethod
+
+
+
+class Lannister(Character):
+    super().__init__(first_name, is_alive)
+
+
+
+## NOTES
+
+### ex01
+
+```
+| Concept              | Explanation                                | Example                                  |
+| -------------------- | ------------------------------------------ | ---------------------------------------- |
+| `super().__init__()` | Calls the parent (`Character`) constructor | `super().__init__(first_name, is_alive)` |
+| `__str__`            | Human-readable display (`print(obj)`)      | `"Robert Baratheon"`                     |
+| `__repr__`           | Developer-readable display (`obj`)         | `"<Character: Robert Baratheon>"`        |
+| `@classmethod`       | Alternative constructor that uses `cls`    | `Baratheon.create("Robert")`             |
+| `Decorator function` | Function that returns a new object         | `create_lannister("Cersei")`             |
+
+```
+
+### 02 multiple inheritance
+
+```
+| Concept                           | Description                                     | Why it matters                                    |
+| --------------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| **Multiple Inheritance**          | Inherit from multiple parents.                  | Simulates “mixed lineage” of Joffrey.             |
+| **MRO (Method Resolution Order)** | Defines which parent’s methods run first.       | Baratheon before Lannister.                       |
+| **@property**                     | Defines controlled access to private variables. | Prevents direct modification, ensures validation. |
+| **Encapsulation**                 | Hide attributes behind getters/setters.         | Keeps code cleaner and safer.                     |
+| **super()**                       | Calls next class in MRO.                        | Avoids calling base constructors manually.        |
+
+```
+
+#### Class Hierarchy Overview
+```
+          ┌──────────────────────────┐
+          │      Character (ABC)     │
+          │ ───────────────────────  │
+          │ + first_name             │
+          │ + is_alive               │
+          │ + die()   (abstract)     │
+          └──────────────┬───────────┘
+                         │
+      ┌──────────────────┴──────────────────┐
+      │                                     │
+┌───────────────┐                   ┌───────────────┐
+│  Baratheon    │                   │   Lannister   │
+│───────────────│                   │───────────────│
+│ + family_name │                   │ + family_name │
+│ + eyes        │                   │ + eyes        │
+│ + hairs       │                   │ + hairs       │
+│ + die()       │                   │ + die()       │
+│ + __str__()   │                   │ + __str__()   │
+│ + __repr__()  │                   │ + __repr__()  │
+└───────────────┘                   └───────────────┘
+      │                                     │
+      └──────────────────┬──────────────────┘
+                         │
+              ┌────────────────────┐
+              │     King (Joffrey) │
+              │────────────────────│
+              │ + eyes (property)  │
+              │ + hairs (property) │
+              │ + get/set methods  │
+              └────────────────────┘
+
+```
+
+#### Memory Reference Flow
+```
++----------------------------------------------+
+| Variable: Joffrey                            |
+|  (reference on stack)                        |
++----------------------------------------------+
+                   │
+                   ▼
++-----------------------------------------------------+
+| King instance (in heap memory)                      |
+|-----------------------------------------------------|
+| first_name : 'Joffrey'                              |
+| is_alive   : True                                   |
+| family_name: 'Baratheon'  ← from Baratheon          |
+| _eyes      : 'brown' → later changed to 'blue'      |
+| _hairs     : 'dark'  → later changed to 'light'     |
+|-----------------------------------------------------|
+| MRO chain  : King → Baratheon → Lannister → Character|
++-----------------------------------------------------+
+
+```
+
+#### Execution Flow (when running tester.py)
+
+```
+Joffrey = King("Joffrey")
+   │
+   ▼
+King.__init__()
+   │
+   └── super() → Baratheon.__init__()
+         │
+         └── Character.__init__()
+
+# Initial dict (from Baratheon defaults)
+{'first_name': 'Joffrey', 'is_alive': True, 'family_name': 'Baratheon', '_eyes': 'brown', '_hairs': 'dark'}
+
+Joffrey.set_eyes("blue")
+ → property setter → self._eyes = "blue"
+
+Joffrey.set_hairs("light")
+ → property setter → self._hairs = "light"
+
+```
+
+⚙️ Method Resolution Order (MRO)
+When Python needs to resolve a method (like __init__ or die()),
+it searches classes in this order:
+```King → Baratheon → Lannister → Character → object```
+👉 You can check this directly in code:
+```print(King.__mro__)```
+
+Output:
+```
+(<class 'DiamondTrap.King'>,
+ <class 'S1E7.Baratheon'>,
+ <class 'S1E7.Lannister'>,
+ <class 'S1E9.Character'>,
+ <class 'object'>)
+```
+
+So when you call:
+```
+super().__init__(first_name)
+```
+It calls Baratheon’s `__init__` first — not Lannister’s — because that’s the first in the MRO chain.
+
+
+```
+| Concept                        | Symbol in Diagram     | Meaning                            |
+| ------------------------------ | --------------------- | ---------------------------------- |
+| `super()`                      | Arrow →               | Calls next class in MRO            |
+| `_eyes`, `_hairs`              | Underscore `_`        | Private attributes (encapsulation) |
+| `King → Baratheon → Lannister` | MRO chain             | Defines method lookup order        |
+| `__init__()`                   | Constructor           | Initializes object attributes      |
+| `@property`                    | Getter/Setter control | Protects and validates data        |
+
+```
+---
+# step-by-step ASCII memory mutation animation
+**step-by-step ASCII memory mutation animation** showing how the `Joffrey` object changes in memory when we modify his properties:
+
+## ⚙️ Step 1 — Object Creation
+
+```python
+Joffrey = King("Joffrey")
+```
+
+**In Memory:**
+
+```
+[STACK]                            [HEAP]
+───────────────                    ───────────────────────────────────────────────
+Joffrey ─────────────┐              King instance
+                     │              ┌───────────────────────────────────────────┐
+                     └─────────────►│ first_name : "Joffrey"                    │
+                                    │ is_alive   : True                         │
+                                    │ family_name: "Baratheon"                  │
+                                    │ _eyes      : "brown"     ← default value  │
+                                    │ _hairs     : "dark"      ← default value  │
+                                    └───────────────────────────────────────────┘
+```
+
+📘 *Joffrey is alive, brown-eyed, dark-haired — defaults inherited from Baratheon.*
+
+---
+
+## 🔁 Step 2 — Change Eye Color
+
+```python
+Joffrey.set_eyes("blue")
+```
+
+**Execution:**
+
+* `set_eyes()` → setter function → modifies `_eyes` attribute.
+
+**In Memory:**
+
+```
+[STACK]                            [HEAP]
+───────────────                    ───────────────────────────────────────────────
+Joffrey ─────────────┐              King instance
+                     │              ┌───────────────────────────────────────────┐
+                     └─────────────►│ first_name : "Joffrey"                    │
+                                    │ is_alive   : True                         │
+                                    │ family_name: "Baratheon"                  │
+                                    │ _eyes      : "blue"      ← changed ✅     │
+                                    │ _hairs     : "dark"                       │
+                                    └───────────────────────────────────────────┘
+```
+
+📘 *Property successfully updated through setter (encapsulation in action).*
+
+---
+
+## 🔁 Step 3 — Change Hair Color
+
+```python
+Joffrey.set_hairs("light")
+```
+
+**Execution:**
+
+* `set_hairs()` → setter function → modifies `_hairs` attribute.
+
+**In Memory:**
+
+```
+[STACK]                            [HEAP]
+───────────────                    ───────────────────────────────────────────────
+Joffrey ─────────────┐              King instance
+                     │              ┌───────────────────────────────────────────┐
+                     └─────────────►│ first_name : "Joffrey"                    │
+                                    │ is_alive   : True                         │
+                                    │ family_name: "Baratheon"                  │
+                                    │ _eyes      : "blue"                       │
+                                    │ _hairs     : "light"     ← changed ✅     │
+                                    └───────────────────────────────────────────┘
+```
+
+📘 *Both attributes updated — Joffrey’s state has mutated in heap memory.*
+
+---
+
+## 🧠 Step 4 — Print `__dict__`
+
+```python
+print(Joffrey.__dict__)
+```
+
+**Output:**
+
+```python
+{'first_name': 'Joffrey',
+ 'is_alive': True,
+ 'family_name': 'Baratheon',
+ '_eyes': 'blue',
+ '_hairs': 'light'}
+```
+
+📘 *Shows the final internal state of Joffrey’s instance dictionary.*
+
+---
+
+## 🔍 Recap Summary
+
+| Step | Code                        | Attribute Changed | Description                     |
+| ---- | --------------------------- | ----------------- | ------------------------------- |
+| 1    | `Joffrey = King("Joffrey")` | —                 | Object created, defaults loaded |
+| 2    | `set_eyes("blue")`          | `_eyes`           | Setter updates eye color        |
+| 3    | `set_hairs("light")`        | `_hairs`          | Setter updates hair color       |
+| 4    | `print(__dict__)`           | —                 | Shows final internal state      |
+
+---
+
+# detailed ASCII + conceptual diagram 
+ **detailed ASCII + conceptual diagram** showing how `@property` and `@setter` actually work internally in Python classes.
+
+This is *exactly* what happens in your `King` class for attributes like `eyes` and `hairs`.
+
+
+## 🧩 1. Property Flow Overview
+
+```
+class King(Baratheon, Lannister):
+    def __init__(self, first_name):
+        super().__init__(first_name)
+        self._eyes = "brown"
+        self._hairs = "dark"
+
+    @property
+    def eyes(self):
+        """Getter"""
+        return self._eyes
+
+    @eyes.setter
+    def eyes(self, color):
+        """Setter"""
+        self._eyes = color
+```
+
+---
+
+## ⚙️ 2. What Happens Behind the Scenes
+
+### Without property:
+
+If you just had:
+
+```python
+Joffrey._eyes = "blue"
+```
+
+You’d be directly modifying a variable — no checks, no validation, and *no encapsulation*.
+
+---
+
+### With `@property`:
+
+The `@property` decorator **wraps your getter and setter** into a **property object**.
+
+📦 **Internally, Python transforms it like this:**
+
+```
+eyes = property(get_eyes, set_eyes)
+```
+
+So, the attribute name `eyes` now refers to a *property descriptor object* that controls access to the internal `_eyes` variable.
+
+---
+
+## 🧠 3. Memory + Function Flow
+
+```
+┌──────────────────────────────────────────────┐
+│ Joffrey = King("Joffrey")                   │
+└──────────────────────────────────────────────┘
+                      │
+                      ▼
+        ┌──────────────────────────────────────────────┐
+        │ King instance in memory (heap)               │
+        │──────────────────────────────────────────────│
+        │ _eyes  = "brown"                             │
+        │ _hairs = "dark"                              │
+        │                                              │
+        │ eyes   → property object (get/set functions) │
+        └──────────────────────────────────────────────┘
+```
+
+Now when you run:
+
+```python
+print(Joffrey.eyes)
+```
+
+👉 **This happens internally:**
+
+```
+1️⃣ Joffrey.eyes → triggers property getter
+2️⃣ property calls King.eyes.fget(self)
+3️⃣ returns self._eyes ("brown")
+```
+
+---
+
+When you do:
+
+```python
+Joffrey.eyes = "blue"
+```
+
+👉 **This happens internally:**
+
+```
+1️⃣ Python sees assignment to a property
+2️⃣ property calls King.eyes.fset(self, "blue")
+3️⃣ Setter function runs: self._eyes = "blue"
+```
+
+So the property intercepts the operation — giving you full control.
+
+---
+
+## 🔁 4. Visual Flow Diagram
+
+```
+              ┌────────────────────┐
+ read value → │ Joffrey.eyes       │
+              └────────┬───────────┘
+                       │
+                       ▼
+           ┌────────────────────────┐
+           │  @property getter       │
+           │  def eyes(self):        │
+           │      return self._eyes  │
+           └────────────────────────┘
+
+ assign value ────────────────┐
+ Joffrey.eyes = "blue"        │
+                              ▼
+           ┌────────────────────────┐
+           │  @eyes.setter           │
+           │  def eyes(self, color): │
+           │      self._eyes = color │
+           └────────────────────────┘
+```
+
+---
+
+## 🧱 5. Why Use It?
+
+| Feature       | Without Property         | With @property                                     |
+| ------------- | ------------------------ | -------------------------------------------------- |
+| Encapsulation | ❌ direct variable access | ✅ controlled access                                |
+| Validation    | ❌ cannot intercept       | ✅ you can validate input                           |
+| Readability   | ✅ simple                 | ✅ same syntax, safer                               |
+| Reusability   | ❌ limited                | ✅ you can change logic later without breaking code |
+
+---
+
+## 💬 6. Quick Example with Validation
+
+```python
+class King(Baratheon, Lannister):
+    @property
+    def eyes(self):
+        return self._eyes
+
+    @eyes.setter
+    def eyes(self, color):
+        if color not in ["blue", "green", "brown"]:
+            raise ValueError("Invalid eye color")
+        self._eyes = color
+```
+
+Now:
+
+```python
+Joffrey.eyes = "red"
+```
+
+💥 Raises `ValueError: Invalid eye color`
+
+---
+
 ## ex03
+
+```
+| Term     | Meaning                                                 | You should use                    |
+| -------- | ------------------------------------------------------- | --------------------------------- |
+| `object` | Generic placeholder for the operand                     | ✔️ Rename to `scalar` for clarity |
+| `vector` | Your stored list of numbers (`self.vector`)             | Stays inside the class            |
+| `scalar` | A single number (int or float) to apply on each element | Passed when doing `v + 5`, etc.   |
+
+```
+
+Excellent 💪 — this **Exercise 03: Calculate My Vector** builds on your Python OOP foundation and introduces a key concept:
+👉 **Operator overloading with dunder methods** (`__add__`, `__mul__`, `__sub__`, `__truediv__`).
+
+Let’s break it all down step by step — with code, diagram, and reasoning.
+
+---
+
+## 🧠 1. Concept Overview: Vector × Scalar
+
+You’re asked to create a **`calculator` class** that represents a **vector** (a list of numbers)
+and can perform math operations **with a scalar** (single number).
+
+📘 *Each operation should modify and print the new vector.*
+
+---
+
+## ⚙️ 2. Expected Behavior from `tester.py`
+
+```python
+from ft_calculator import calculator
+
+v1 = calculator([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
+v1 + 5      # → add 5 to each element → prints new vector
+print("---")
+
+v2 = calculator([0.0, 1.0, 2.0, 3.0, 4.0, 5.0])
+v2 * 5      # → multiply each element by 5 → prints new vector
+print("---")
+
+v3 = calculator([10.0, 15.0, 20.0])
+v3 - 5      # → subtract 5 from each element
+v3 / 5      # → divide each element by 5
+```
+
+🧩 **Expected Output**
+
+```
+[5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+---
+[0.0, 5.0, 10.0, 15.0, 20.0, 25.0]
+---
+[5.0, 10.0, 15.0]
+[1.0, 2.0, 3.0]
+```
+
+---
+
+## 🧩 3. Full Implementation — `ft_calculator.py`
+
+```python
+class calculator:
+    """A calculator class that performs scalar operations on a vector."""
+
+    def __init__(self, vector):
+        """Initialize with a list (vector) of floats."""
+        self.vector = vector
+
+    def __add__(self, scalar):
+        """Add scalar to each element and print result."""
+        result = [x + scalar for x in self.vector]
+        print(result)
+        return result
+
+    def __mul__(self, scalar):
+        """Multiply each element by scalar and print result."""
+        result = [x * scalar for x in self.vector]
+        print(result)
+        return result
+
+    def __sub__(self, scalar):
+        """Subtract scalar from each element and print result."""
+        result = [x - scalar for x in self.vector]
+        print(result)
+        return result
+
+    def __truediv__(self, scalar):
+        """Divide each element by scalar and print result (handle div by 0)."""
+        if scalar == 0:
+            print("Error: Division by zero")
+            return None
+        result = [x / scalar for x in self.vector]
+        print(result)
+        return result
+```
+
+---
+
+## 🔍 4. Line-by-Line Explanation
+
+| Line  | Code                                         | Explanation                                                       |
+| ----- | -------------------------------------------- | ----------------------------------------------------------------- |
+| 1     | `class calculator:`                          | Defines your class — represents a numeric vector.                 |
+| 2     | `"""A calculator class..."""`                | Docstring (required by Piscine norms).                            |
+| 4     | `def __init__(self, vector):`                | Constructor — takes a list of floats.                             |
+| 5     | `self.vector = vector`                       | Stores the list in the instance.                                  |
+| 7     | `def __add__(self, scalar):`                 | Dunder method → called when you do `v + n`.                       |
+| 8     | `result = [x + scalar for x in self.vector]` | Adds scalar to each vector element using list comprehension.      |
+| 9     | `print(result)`                              | Outputs the resulting list immediately.                           |
+| 10    | `return result`                              | Returns the new list (optional).                                  |
+| 12–24 | `__mul__`, `__sub__`, `__truediv__`          | Same logic for other arithmetic operations.                       |
+| 21    | `if scalar == 0:`                            | Protects against division by zero (only required error handling). |
+
+---
+
+### ⚙️ Operator Overloading Diagram
+
+```
+     ┌─────────────────────────────┐
+     │       calculator class      │
+     ├─────────────────────────────┤
+     │ + vector = [floats]         │
+     │ + __add__(scalar)           │
+     │ + __mul__(scalar)           │
+     │ + __sub__(scalar)           │
+     │ + __truediv__(scalar)       │
+     └───────────────┬─────────────┘
+                     │
+                     ▼
+              [operator overload]
+      ┌─────────────────────────────────────────┐
+      │  v1 + 5  → calls v1.__add__(5)          │
+      │  v1 - 2  → calls v1.__sub__(2)          │
+      │  v1 * 3  → calls v1.__mul__(3)          │
+      │  v1 / 2  → calls v1.__truediv__(2)      │
+      └─────────────────────────────────────────┘
+```
+
+---
+
+### 💡 Output Flow Visualization
+
+```
+v1 = calculator([0, 1, 2, 3, 4, 5])
+        │
+        ▼
++----------------------------+
+| vector = [0, 1, 2, 3, 4, 5]|
++----------------------------+
+
+v1 + 5  → [5, 6, 7, 8, 9, 10]
+v1 * 5  → [0, 5, 10, 15, 20, 25]
+v3 - 5  → [5, 10, 15]
+v3 / 5  → [1, 2, 3]
+```
+
+```
+v1 = calculator([0, 1, 2])
+v1 + 5
+       │
+       ▼
+Python internally calls:
+v1.__add__(5)
+        │
+        ├── self.vector = [0, 1, 2]
+        └── scalar (a.k.a. "object") = 5
+
+```
+
+---
+
+### 🧮 Key Takeaways
+
+Summary
+```
+| Term     | Meaning                                                 | You should use                    |
+| -------- | ------------------------------------------------------- | --------------------------------- |
+| `object` | Generic placeholder for the operand                     | ✔️ Rename to `scalar` for clarity |
+| `vector` | Your stored list of numbers (`self.vector`)             | Stays inside the class            |
+| `scalar` | A single number (int or float) to apply on each element | Passed when doing `v + 5`, etc.   |
+
+```
+
+
+```
+| Concept                | Description                                       | Example                             |
+| ---------------------- | ------------------------------------------------- | ----------------------------------- |
+| **Dunder methods**     | Special Python methods that override operators    | `__add__` → `+`, `__sub__` → `-`    |
+| **List comprehension** | Short syntax to process lists                     | `[x + scalar for x in self.vector]` |
+| **Encapsulation**      | Vector stored as `self.vector`, internal to class | Keeps operations organized          |
+| **Division check**     | Only error handling required                      | Avoids ZeroDivisionError            |
+| **No global code**     | Everything inside class or tester                 | Required by norm                    |
+```
+---
+
+## ex04
+
+ASCII Diagram — Execution Flow
+```
+              ┌──────────────────────────────┐
+              │         calculator           │
+              ├──────────────────────────────┤
+              │  @staticmethod               │
+              │  def dotproduct(V1, V2)      │
+              │  def add_vec(V1, V2)         │
+              │  def sous_vec(V1, V2)        │
+              └─────────────┬────────────────┘
+                            │
+                            ▼
+     ┌───────────────────────────────────────────────┐
+     │  calculator.dotproduct([5,10,2], [2,4,3])     │
+     ├───────────────────────────────────────────────┤
+     │  Step 1: zip(V1, V2) → [(5,2), (10,4), (2,3)] │
+     │  Step 2: multiply → [10, 40, 6]               │
+     │  Step 3: sum → 56                             │
+     └───────────────────────────────────────────────┘
+
+```
+💡 Why it’s good OOP practice
+- You group related math operations inside a class (calculator)
+- You use static methods because these don’t need internal state (self)
+- You keep your code modular and reusable for later exercises
+
+✅ Summary Table
+| Concept              | Keyword / Syntax               | Purpose                    |
+| -------------------- | ------------------------------ | -------------------------- |
+| `@staticmethod`      | Decorator                      | Call method without `self` |
+| `zip()`              | Built-in function              | Combine pairs of elements  |
+| `sum()`              | Built-in function              | Sum all numbers            |
+| `list comprehension` | `[x + y for x, y in zip(...)]` | Vector operations          |
+| `print(f"...")`      | f-string formatting            | Clean output               |
+
+
+
+
+
 
