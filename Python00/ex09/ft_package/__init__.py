@@ -1,16 +1,13 @@
-
-
 #!/usr/bin/env python3
 
-from ft_package.count_in_list import count_in_list
+from .count_in_list import count_in_list
 
 __version__ = "0.0.1"
 __author__ = "hottie"
 
-
-#OUTPUT
+# OUTPUT
 # pip show -v ft_package
-# $>pip show -v ft_package
+# $> pip show -v ft_package
 # Name: ft_package
 # Version: 0.0.1
 # Summary: A sample test package
@@ -26,3 +23,6 @@ __author__ = "hottie"
 # Classifiers:
 # Entry-points:
 # $>
+
+# Export public API names (referencing count_in_list marks it as used)
+__all__ = [count_in_list.__name__]

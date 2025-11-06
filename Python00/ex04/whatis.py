@@ -1,56 +1,34 @@
+#!/usr/bin/env python3
+
+"""Check whether a single provided integer argument is odd or even.
+
+All work is performed inside main() to avoid module-level globals and
+side-effects on import.
+"""
 
 import sys
-# print(sys.argv)
-
-arg = sys.argv
 
 
-if len(arg) == 1:
-    exit()
-elif len(arg) > 2:
-    print("AssertionError: more than one argument is provided")
-else: 
+def main(argv: list[str] | None = None) -> None:
+    argv = sys.argv if argv is None else argv
+
+    if len(argv) == 1:
+        return
+    if len(argv) > 2:
+        print("AssertionError: more than one argument is provided")
+        return
+
     try:
-        nb = int(arg[1])
-        if int(arg[1]) % 2 != 0:
-            print("I'm Odd.")
-        elif int(arg[1]) % 2 == 0:
-            print("I'm Even.")
+        nb = int(argv[1])
     except ValueError:
         print("AssertionError: argument is not an integer")
+        return
 
-# return 0
-
-
-
-## OUTPUT ##
-# $> python whatis.py 14
-# I'm Even.
-# $>
-# $> python whatis.py -5
-# I'm Odd.
-# $>
-# $> python whatis.py
-# $>
-# $> python whatis.py 0
-# I'm Even.
-# $>
-# $> python whatis.py Hi!
-# AssertionError: argument is not an integer
-# $>
-# $> python whatis.py 13 5
-# AssertionError: more than one argument is provided
+    if nb % 2 != 0:
+        print("I'm Odd.")
+    else:
+        print("I'm Even.")
 
 
-
-
-#### NOTES ######################
-
-#learn to take arg 
-
-# sys.argv is a list of strings.
-# sys.argv[0] → script name (whatis.py)
-# sys.argv[1] → first argument passed
-
-
-################################
+if __name__ == "__main__":
+    main()

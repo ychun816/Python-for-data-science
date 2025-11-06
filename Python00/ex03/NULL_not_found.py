@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#prototype
+# prototype
 def NULL_not_found(object: any) -> int:
     if object is None:
         print("Nothing:", object, type(object))
@@ -14,11 +14,11 @@ def NULL_not_found(object: any) -> int:
         print("Fake:", object, type(object))
     else:
         print("Type not Found")
-        return 1 #for unknown types
-    return 0 #success
+        return 1  # for unknown types
+    return 0  # success
 
 
-#### NOTES ######################
+# NOTES
 
 # (object: any) → input parameter with type hint (any = anything)
 
@@ -33,6 +33,6 @@ def NULL_not_found(object: any) -> int:
 # → == can be overridden by custom objects (__eq__ method)
 # is	(Identity):	Whether two objects are the exact same object in memory
 # object is True
+
 # object is False
 ################################
-
