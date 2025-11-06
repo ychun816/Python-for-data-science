@@ -1,50 +1,45 @@
-#! usr/bin/env python3
+#!/usr/bin/env python3
+"""Simple CSV loader for the exercises using pandas.
 
-# Pandas DataFrames
-#Create a function that loads a CSV file and returns its dimensions.
-# Use Python's built-in csv module or the pandas library to read the CSV file.
-# Handle potential errors such as file not found or incorrect format using try-except blocks.
-# Return the dimensions of the dataset (number of rows and columns).
+This module exposes :func:`load` which reads a CSV file into a
+``pandas.DataFrame``. The function validates the path and extension and
+raises an informative exception on failure.
+"""
 
-import os #path check
-import pandas as pd #visualize data
+import os
+import pandas as pd
 
-#  -> Dataset: (You have to adapt the type of return according to your library)
+
 def load(path: str) -> pd.DataFrame:
+    """Load a CSV file and return a pandas DataFrame.
+
+    Parameters
+    ----------
+    path:
+        Path to the CSV file.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with the CSV contents.
     """
-    load takes a csv file path and returns a data frame.
 
-    Parameters:
-    path (str): path of the csv file.
-
-    Return Value:
-    dataframe (Pandas DataFrame): a dataframe containing the csv's content.
-    """
-
-    #error check
-    #-cant find path
+    # Error checks
     if not os.path.exists(path):
         raise FileNotFoundError(f"File not found: {path}")
-        # print(f"File not found: {path}")
-        # return None
-    #-bad extension
-    if not path.endswith('.csv'):
+
+    if not path.endswith(".csv"):
         raise ValueError(f"Invalid file format: {path}. Expected a .csv file.")
-        # print(f"Invalid file format: {path}. Expected a .csv file.")
-        # return None
 
     try:
-        # Load csv data into a dataframe
+        # Load CSV data into a DataFrame
         df = pd.read_csv(path)
-        if df.empty: #chec if file empty
+        if df.empty:  # check if file empty
             raise ValueError(f"The file {path} is empty.")
 
         print(f"Dataset dimensions: {df.shape}")
         return df
 
     except Exception as e:
-        print(f"Error loading dataset: {e}")  # just prints error, but returns None
-        raise #re-throws the same exception upward  #try -> except -> (print) -> raise -> back to main() or tester.py
-        # return None
-
-
+        print(f"Error loading dataset: {e}")
+        raise
