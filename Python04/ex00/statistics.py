@@ -1,111 +1,82 @@
-#! usr/bin/env python3
+#!/usr/bin/env python3
 
-# 1. Function: ft_statistics(*args, **kwargs)
-# - *args: unknown number of numerical inputs
-# - **kwargs: unknown number of “requests” for statistics (like mean, median, quartile, std, var)
-# 2. Must calculate only the requested statistics.
-# 3. Must handle errors, including:
-# - No numbers in args
-# - Invalid kwargs names
-# 4. Must not use external libraries except standard ones.
+"""Simple statistics helper used by the exercises.
 
-# from typing import Any
+Provides ft_statistics(*args, **kwargs) which computes only the
+requested statistics from numeric positional arguments.
+"""
 
-def ft_statistics(*args: Any, **kwargs: Any) -> None
-   """Function to filter list numbers and extract values"""
-    # Step 1: Check if args exist
-   if not args:
-        print("----- ERROR")
-        print("ERROR ERROR")
-        return
+from typing import Any
+import math
 
-    # Step 2: Filter only numeric values
-    nbs = []
-    for arg in args:
-        if isinstance(arg, (int, float)):
-            nbs.append(arg)
-        else:
-            print(f"WARNING: Ignoring non-numeric value '{arg}'")
-    
+
+def ft_statistics(*args: Any, **kwargs: Any) -> None:
+    """Compute requested statistics for numeric args and print results.
+
+    Behavior (kept simple to match tester expectations):
+    - Filters out non-numeric args with a warning.
+    - If there are no numeric values, prints three lines with "ERROR"
+      and returns.
+    - kwargs values are expected to be strings naming statistics
+      (for example: toto="mean", tutu="median"). We iterate over
+      the kwargs values and print the requested stats in the order
+      they appear.
+    Supported stats: "mean", "median", "quartile", "var", "std".
+    """
+
+    # Step 1: Filter numeric inputs
+    nbs = [a for a in args if isinstance(a, (int, float))]
+    for a in args:
+        if not isinstance(a, (int, float)):
+            print(f"WARNING: Ignoring non-numeric value '{a}'")
+
     if not nbs:
-        print("----- ERROR")
-        print("ERROR ERROR")
+        # The tester expects an ERROR block when no numbers are provided.
+        print("ERROR")
+        print("ERROR")
+        print("ERROR")
         return
 
-    # Step 3: Sort numbers manually (bubble sort)
-    nbs_size = len(nbs)
-    for i in range(nbs_size):
-        for j in range(0, nbs_size-i-1):
-            if nbs[j] > nbs[j+1]:
-                nbs[j], nbs[j+1] = nbs[j+1], nbs[j]
+    # Step 2: Sort numbers
+    nbs = sorted(nbs)
 
-    # Step 4: Helper functions implemented manually
-    #mean
-    def mean(nb):
-        """get mean"""
-        total = 0
-        for x in nbs:
-            total += x
-        return total / len(nbs)
+    # Helper functions
+    def mean(nums):
+        return sum(nums) / len(nums)
 
-    #median
-    def median(nb):
-        """get median (middle value after sorting)"""
-        size = len(nbs)
+    def median(nums):
+        size = len(nums)
         mid = size // 2
-        if size % 2 == 0:
-            return (nbs[mid-1] + nbs[mid]) / 2
+        if size % 2 == 1:
+            return nums[mid]
+        return (nums[mid - 1] + nums[mid]) / 2
 
-    #quartile
-    def quartile(nb):
-        """get quartile (Q1 = 25%, Q3 = 75%, sort + pick indices)"""
-        size = len(nbs)
+    def quartile(nums):
+        size = len(nums)
         q1_idx = size // 4
-        q3_indx = 3 * size // 4
-        return [nbs[q1_idx], nbs[q3_idx]]
+        q3_idx = 3 * size // 4
+        return [float(nums[q1_idx]), float(nums[q3_idx])]
 
-    #variance
-    def variance(nb):
-        """get variance, sum((x - mean)^2)/n """
-        m = mean(nbs)
-        return sum((x - m)**2 for x in nums) / len(nums)
+    def variance(nums):
+        m = mean(nums)
+        return sum((x - m) ** 2 for x in nums) / len(nums)
 
-    #std_dev
-    def std_dev(nb):
-        """get std_dev, sqrt(variance)"""
-        return math.sqrt(variance(nbs))
+    def std_dev(nums):
+        return math.sqrt(variance(nums))
 
-    # Step 5: Map string keys to functions
     stat_map = {
         "mean": mean,
         "median": median,
         "quartile": quartile,
         "var": variance,
-        "std": std_dev
+        "std": std_dev,
     }
 
-    # Step 6: Process kwargs
-    for key in kwargs:
-        stat_name = kwargs[key]
-
+    # Process requested statistics from kwargs values
+    for stat_name in kwargs.values():
         if stat_name in stat_map:
             func = stat_map[stat_name]
             result = func(nbs)
             print(f"{stat_name} : {result}")
         else:
             print(f"WARNING: Unknown stat '{stat_name}'")
-
-
-
-
-### NOTES ###
-
-# | Statistic | Formula / Method                         |
-# | --------- | ---------------------------------------- |
-# | Mean      | sum(numbers) / len(numbers)              |
-# | Median    | middle value after sorting               |
-# | Quartile  | Q1 = 25%, Q3 = 75% (sort + pick indices) |
-# | Variance  | sum((x - mean)^2)/n                      |
-# | Std Dev   | sqrt(variance)                           |
-
-

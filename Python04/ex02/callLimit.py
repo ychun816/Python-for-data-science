@@ -1,31 +1,40 @@
-#! usr/bin/env python3
+#!/usr/bin/env python3
 
-# Create a decorator @callLimit(n) that:
-# 1. limits how many times a function can be called,
-# 2. after the limit is reached → it doesn’t run,
-# 3. instead, it prints an error message like: Error: <function g at 0x7fabdc243ee0> call too many times
+"""
+Decorator factory that limits how many times a function can be called.
+
+The returned decorator allows a function to run `limit` times and then
+prints an error message on subsequent calls.
+"""
+
+from typing import Any, Callable
 
 
-# decorator with parameter
-# -> A decorator with parameter = function returning a decorator function.
+def callLimit(
+    limit: int,
+) -> Callable[
+    [Callable[..., Any]],
+    Callable[..., Any],
+]:
+    """Layer 1: accepts the limit and returns a decorator.
 
+    The returned decorator, when applied to a function, will allow that
+    function to run `limit` times and then print an error message on
+    subsequent calls.
+    """
+    count = 0
 
-def callLimit(limit: int):      # Layer 1: accepts the limit
-    """Layer 1: accepts the limit"""
-    count = 0                   # keeps track of how many times called
+    def callLimiter(function: Callable[..., Any]) -> Callable[..., Any]:
+        """Layer 2: the actual decorator wrapping `function`."""
 
-    def callLimiter(function):  # Layer 2: wraps the target function
-        """Layer 2: wraps the target function"""
-        
-        def limit_function(*args: Any, **kwds: Any): # Layer 3: actual wrapper
-            """Layer 3: actual wrapper"""
-            nonlocal count # allow modification of outer variable
+        def limit_function(*args: Any, **kwds: Any) -> Any:
+            """Layer 3: wrapper that enforces the call limit."""
+            nonlocal count
             if count < limit:
                 count += 1
                 return function(*args, **kwds)
-            else:
-                print(f"Error: {function} call too many times!")
-        
-        return limit_function # Layer 2: returns its wrapper
-   
-   return callLimiter  # Layer 1: returns the decorator
+            print(f"Error: {function} call too many times!")
+
+        return limit_function
+
+    return callLimiter

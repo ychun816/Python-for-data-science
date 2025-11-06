@@ -1,8 +1,9 @@
-#! usr/bin/env python3
+#!/usr/bin/env python3
 
 from in_out import outer
 from in_out import square
 from in_out import pow
+
 
 my_counter = outer(3, square)
 print(my_counter())
@@ -15,7 +16,7 @@ print(another_counter())
 print(another_counter())
 print(another_counter())
 
-#OUTPUT
+# OUTPUT
 # $> python tester.py
 # 9 81
 # 6561
