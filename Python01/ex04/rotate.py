@@ -4,6 +4,7 @@ from load_image import ft_load
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def ft_square_crop(image_array: np.ndarray, size: int = 400):
     """Crop the center square of the image / 裁剪中央正方形"""
     try:
@@ -16,6 +17,7 @@ def ft_square_crop(image_array: np.ndarray, size: int = 400):
         return square
     except Exception as e:
         print(f"❌ Error while cropping: {e}")
+
 
 def ft_transpose(image_array: np.ndarray):
     """Transpose image (rows ↔ columns) / 轉置影像"""
@@ -33,6 +35,7 @@ def ft_transpose(image_array: np.ndarray):
     except Exception as e:
         print(f"❌ Error while transposing: {e}")
 
+
 def ft_display(image_array: np.ndarray, title="Transposed Image"):
     """Display image with axes / 顯示圖片與座標軸"""
     plt.imshow(image_array, cmap='gray')
@@ -41,9 +44,29 @@ def ft_display(image_array: np.ndarray, title="Transposed Image"):
     plt.ylabel("Y-axis / Y軸")
     plt.show()
 
+
+def main(argv=None) -> int:
+    """Demo runner for rotate utilities.
+
+    Loads the example image, crops a square and displays the transposed
+    result. Returns 0 on success, 1 on error and catches exceptions so none
+    escape import-time execution.
+    """
+    import sys
+    argv = argv or sys.argv
+    try:
+        arr = ft_load("animal.jpeg")
+        if arr is not None:
+            square = ft_square_crop(arr, 400)
+            transposed = ft_transpose(square)
+            ft_display(transposed)
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
 if __name__ == "__main__":
-    arr = ft_load("animal.jpeg")
-    if arr is not None:
-        square = ft_square_crop(arr, 400)
-        transposed = ft_transpose(square)
-        ft_display(transposed)
+    import sys
+
+    sys.exit(main())

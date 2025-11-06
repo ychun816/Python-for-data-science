@@ -1,84 +1,79 @@
-#! usr/bin/env python3
+#!/usr/bin/env python3
 
-#use PIL & numPY lib # do i need pathlib and typing? -> to check
+"""Image loader examples for ex05.
+
+The module provides a simple :func:`ft_load` implementation and an
+optional commented example using pathlib/typing for educational
+purposes.
+"""
+
 from PIL import Image
 import numpy as np
-# from pathlib import Path
-# from typing import Union
+import sys
 
-def ft_load(path: str) -> np.ndarray:
+
+def ft_load(path: str) -> np.ndarray | None:
+    """Load an image and return an RGB NumPy array, or ``None`` on error.
+
+    Prints brief info on success and prints an error message to stderr on
+    failure.
+    """
     try:
-        # Load the image
-        img = Image.open(path) #put jpg path here? 
-        
-        # Check supported formats
+        img = Image.open(path)
+
         if img.format not in ["JPEG", "JPG"]:
-            return f"Error: Unsupported image format ({img.format})"
-        
+            msg = f"Error: Unsupported image format ({img.format})"
+            print(msg, file=sys.stderr)
+            return None
+
         print(f"The format of the image is: {img.format}")
-        
-        # Convert to RGB (handle grayscale or RGBA)
+
         img = img.convert("RGB")
-        
-        # Convert to NumPy array
         img_array = np.array(img)
-        
-        # Print shape
+
         print(f"The shape of image is: {img_array.shape}")
-        
+
         return img_array
 
     except FileNotFoundError:
-        return "Error: File not found"
+        print("Error: File not found", file=sys.stderr)
+        return None
     except Exception as e:
-        return f"Error: {e}"
+        print(f"Error: {e}", file=sys.stderr)
+        return None
 
-#method2: using pathlib / typing
-# from PIL import Image
-# import numpy as np
+
+# Method 2: using pathlib / typing (commented example)
 # from pathlib import Path
 # from typing import Union
-
+#
 # def ft_load(path: Union[str, Path]) -> Union[np.ndarray, None]:
-#     """
-#     Load an image file and return its pixel data as a NumPy array.
-    
+#     """Load an image file and return its pixel data as a NumPy array.
+#
 #     Args:
 #         path (str | Path): The path to the image file (JPG or JPEG).
-
+#
 #     Returns:
-#         np.ndarray | None: The image pixels as an RGB NumPy array if successful,
-#                            or None if an error occurred.
+#         np.ndarray | None: The image pixels as an RGB NumPy array if
+#                            successful, or None if an error occurred.
 #     """
 #     try:
-#         # Convert to Path object (if not already)
 #         image_path = Path(path)
-
-#         #Validate file existence
+#
 #         if not image_path.exists():
 #             print("Error: File not found.")
 #             return None
-
-#         #Validate file format
+#
 #         if image_path.suffix.lower() not in [".jpg", ".jpeg"]:
 #             print("Error: Unsupported file format. Please use JPG or JPEG.")
 #             return None
-
-#         #Load image using Pillow
+#
 #         img = Image.open(image_path)
-
-#         #Ensure image is in RGB mode (3 channels)
 #         img = img.convert("RGB")
-
-#         #Convert image to NumPy array
 #         arr = np.array(img)
-
-#         #Display info
+#
 #         print(f"The shape of image is: {arr.shape}")
-#         print(arr)
-
 #         return arr
-
 #     except FileNotFoundError:
 #         print("Error: File not found.")
 #         return None
