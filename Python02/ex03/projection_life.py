@@ -10,7 +10,7 @@ from matplotlib import ticker as plticker
 
 from load_csv import load
 
-# Dictionary to convert shorthand numbers (e.g., '1k', '2.5M', '3B') into integers
+# Convert shorthand numbers (e.g., '1k', '2.5M', '3B') to integers
 tens = dict(k=1e3, m=1e6, b=1e9)
 
 
@@ -129,16 +129,40 @@ def _parse_gdp_value(x):
 
 
 def gdp_life_expectancy(year: str) -> None:
-    """Load CSVs, merge life expectancy and GDP for the given year, and plot."""
+    """Load CSVs, merge life expectancy and GDP for the given year."""
     abs_path = os.path.dirname(os.path.abspath(__file__))
 
     life_candidates = (
-        os.path.join(abs_path, "../data/life_expectancy_years.csv"),
-        os.path.join(abs_path, "../life_expectancy_years.csv"),
+        os.path.join(
+            abs_path,
+            "..",
+            "data",
+            "life_expectancy_years.csv",
+        ),
+        os.path.join(
+            abs_path,
+            "..",
+            "life_expectancy_years.csv",
+        ),
     )
     gdp_candidates = (
-        os.path.join(abs_path, "../data/income_per_person_gdppercapita_ppp_inflation_adjusted.csv"),
-        os.path.join(abs_path, "../income_per_person_gdppercapita_ppp_inflation_adjusted.csv"),
+        os.path.join(
+            abs_path,
+            "..",
+            "data",
+            (
+                "income_per_person_gdppercapita_"
+                "ppp_inflation_adjusted.csv"
+            ),
+        ),
+        os.path.join(
+            abs_path,
+            "..",
+            (
+                "income_per_person_gdppercapita_"
+                "ppp_inflation_adjusted.csv"
+            ),
+        ),
     )
 
     df_life = load(_first_existing(life_candidates))
@@ -151,14 +175,26 @@ def gdp_life_expectancy(year: str) -> None:
     if year not in df_life.columns or year not in df_gdp.columns:
         raise ValueError(f"{year} not found in dataset columns")
 
-    df_life_sel = df_life[["country", year]].rename(columns={year: "Life Expectancy"})
-    df_gdp_sel = df_gdp[["country", year]].rename(columns={year: "GDP"})
+    df_life_sel = (
+        df_life[["country", year]]
+        .rename(columns={year: "Life Expectancy"})
+    )
+    df_gdp_sel = (
+        df_gdp[["country", year]]
+        .rename(columns={year: "GDP"})
+    )
 
-    df_merged = pd.merge(df_life_sel, df_gdp_sel, on="country", how="inner").dropna()
+    df_merged = (
+        pd.merge(df_life_sel, df_gdp_sel, on="country", how="inner")
+        .dropna()
+    )
 
     # convert GDP to integer values
+
     df_merged["GDP"] = df_merged["GDP"].apply(_parse_gdp_value)
     df_merged["Country"] = df_merged["country"]
 
-    render_plot(df_merged[["Country", "Life Expectancy", "GDP"]], year)
-
+    render_plot(
+        df_merged[["Country", "Life Expectancy", "GDP"]],
+        year,
+    )
