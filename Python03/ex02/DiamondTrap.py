@@ -1,29 +1,16 @@
 #!/usr/bin/env python3
 
-"""Minimal King implementation for ex02.
-
-This module provides a simple King class that inherits from
-Baratheon and Lannister (imported from S1E7). It exposes
-properties for eyes and hairs with safe getters/setters.
-"""
-
 from S1E7 import Baratheon, Lannister
 
 
 class King(Baratheon, Lannister):
-    """A simple hybrid King combining Baratheon and Lannister.
-
-    This class keeps private attributes for eyes and hairs and
-    exposes property accessors and small compatibility wrappers.
-    """
+    """Joffrey Baratheon – a hybrid king between Baratheon and Lannister."""
 
     def __init__(self, first_name: str, is_alive: bool = True):
-        # Let parent initializers run according to MRO
+        """Initialize King Joffrey with mixed family traits."""
         super().__init__(first_name, is_alive)
-        # default values if parents didn't set them
-        self._eyes = getattr(self, "eyes", "brown")
-        self._hairs = getattr(self, "hairs", "dark")
 
+    # ---- Using @property ----
     @property
     def eyes(self):
         """Return current eye color."""
@@ -44,15 +31,19 @@ class King(Baratheon, Lannister):
         """Set hair color safely."""
         self._hairs = color
 
-    # compatibility wrappers
+    # ---- Extra getter/setter for backward compatibility ----
     def set_eyes(self, color):
+        """Public setter for eyes (legacy wrapper)."""
         self.eyes = color
 
     def set_hairs(self, color):
+        """Public setter for hairs (legacy wrapper)."""
         self.hairs = color
 
     def get_eyes(self):
+        """Public getter for eyes."""
         return self.eyes
 
     def get_hairs(self):
+        """Public getter for hairs."""
         return self.hairs
