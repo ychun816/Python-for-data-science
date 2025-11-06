@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
 
 from S1E9 import Character
 
+
 class Baratheon(Character):
     """A class representing a member of House Baratheon."""
+
     def __init__(self, first_name: str, is_alive: bool = True):
         """Initialize a Baratheon character."""
         super().__init__(first_name, is_alive)
@@ -11,47 +14,46 @@ class Baratheon(Character):
         self.family_name = "Baratheon"
         self.eyes = "brown"
         self.hairs = "dark"
-    
 
     def __str__(self):
         """Return a human-readable string version of the object."""
-        return f"{self.first_name} {self.family_name}"   # When you use print(obj), __str__ is called.
+        return f"{self.first_name} {self.family_name}"
 
     def __repr__(self):
         """Return a developer-readable representation of the object."""
-        return f"<Character: {self.first_name} {self.family_name}>"         # When you type obj in the console, __repr__ is used.
+        return f"<Character: {self.first_name} {self.family_name}>"
 
     @classmethod
     def create(cls, first_name, is_alive=True):
         """Class method to create a new Baratheon instance."""
-        return cls(first_name, is_alive)  # cls represents the class itself (Baratheon)
-        # This allows chained creation, like: Baratheon.create("Robert").create(...)
+        return cls(first_name, is_alive)
 
 
 class Lannister(Character):
     """A Lannister character, inheriting from Character."""
-    def __init__(self, first_name:str, is_alive:bool = true):
+
+    def __init__(self, first_name: str, is_alive: bool = True):
         """Initialize a Lannister character."""
         super().__init__(first_name, is_alive)
         self.family_name = "Lannister"
         self.eyes = "blue"
         self.hairs = "light"
 
-        def __str__(self):
-            """Return a human-readable string version of the object."""
-            return f"{self.first_name} {self.family_name}"
-        
-        def __repr__(self):
-            """Return a developer-readable representation of the object."""
-            return f"<Character: {self.first_name} {self.family_name}>"
+    def __str__(self):
+        """Return a human-readable string version of the object."""
+        return f"{self.first_name} {self.family_name}"
 
-        @classmethod
-        def create(cls, first_name, is_alive=True):
-            """Class method to create a new Lannister instance."""
-            return cls(first_name, is_alive)
+    def __repr__(self):
+        """Return a developer-readable representation of the object."""
+        return f"<Character: {self.first_name} {self.family_name}>"
 
-# --- Decorator function example (optional bonus task in spec) ---
-# Instead of calling Lannister(first_name), we use a helper decorator-like function.
-def create_lannister(your code here):
+    @classmethod
+    def create(cls, first_name, is_alive=True):
+        """Class method to create a new Lannister instance."""
+        return cls(first_name, is_alive)
+
+
+# Helper function to create a Lannister instance easily.
+def create_lannister(first_name, is_alive=True):
     """Function that creates a Lannister character easily."""
     return Lannister(first_name, is_alive)
