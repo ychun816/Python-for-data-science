@@ -14,27 +14,54 @@ shopt -s nullglob
 # Color helpers
 BOLD='\033[1m'
 BABY_BLUE='\033[1;96m'
+PASTEL_VIOLET='\033[1;95m'
 CYAN='\033[1;36m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 RESET='\033[0m'
 
+# Pastel orange background (256-color) with black foreground for contrast
+BG_PASTEL_ORANGE='\033[48;5;215m'
+FG_BLACK='\033[30m'
+FG_ORANGE='\033[38;5;208m'
+
+# Test argument for ex05 (single-line, newlines collapsed to spaces)
+TEST_ARG="Python 3.0, released in 2008, was a major revision that is not completely backward-compatible with earlier versions. Python 2 was discontinued with version 2.7.18 in 2020."
+
 # Explicit list of repos. Comment out lines for repos you don't want to run.
 REPOS=(
     "Python00"
-    # "Python01"
+    "Python01"
     # "Python02"
     # "Python03"
     # "Python04"
 )
 
+
 for repo_name in "${REPOS[@]}"; do
     repo="$ROOT_DIR/$repo_name"
     [ -d "$repo" ] || continue
     echo
-    printf "%b\n" "${BOLD}${BABY_BLUE}================================================================${RESET}"
-    printf "%b\n" "${BOLD}${CYAN}Repo: $repo_name${RESET}"
-    printf "%b\n" "${BOLD}${BABY_BLUE}================================================================${RESET}"
+    # Repo header: show a bold orange message about running flake8
+    # printf "%b\n" "${BOLD}${BABY_BLUE}================================================================${RESET}"
+    printf "%b\n" "${BOLD}${BG_PASTEL_ORANGE}${FG_BLACK} Repo: $repo_name ${RESET}"
+
+    # Run flake8 linting for this repo (if available)
+    # printf "%b\n" "${BOLD}${FG_ORANGE}run flake8 (will show errors below if found): $repo_name${RESET}"
+    # flake8 "$repo" #|| true
+    if command -v flake8 >/dev/null 2>&1; then
+        printf "%b\n" "${FG_ORANGE}Running flake8 for $repo_name...${RESET}"
+        # run flake8 and show results; do not stop on lint failures
+        if ! flake8 "$repo"; then
+            printf "%b\n" "${BOLD}${RED}flake8 reported issues in $repo_name (see above)${RESET}"
+        else
+            printf "%b\n" "${BOLD}${FG_ORANGE}flake8 passed for $repo_name${RESET}"
+        fi
+    else
+        printf "%b\n" "${BOLD}${RED}flake8 not found, skipping lint for $repo_name${RESET}"
+    fi
+
+    # printf "%b\n" "${BOLD}${BABY_BLUE}================================================================${RESET}"
     for ex in "$repo"/ex{00..09}; do
         [ -d "$ex" ] || continue
         echo
@@ -52,9 +79,18 @@ for repo_name in "${REPOS[@]}"; do
                 cd "$ex"
                 # use python3 where available
                 if command -v python3 >/dev/null 2>&1; then
-                    python3 "$(basename "$py")"
+                    if [ "$(basename "$ex")" = "ex05" ]; then
+                        # pass the long test argument to ex05
+                        python3 "$(basename "$py")" "$TEST_ARG"
+                    else
+                        python3 "$(basename "$py")"
+                    fi
                 else
-                    python "$(basename "$py")"
+                    if [ "$(basename "$ex")" = "ex05" ]; then
+                        python "$(basename "$py")" "$TEST_ARG"
+                    else
+                        python "$(basename "$py")"
+                    fi
                 fi
             ) || echo "[error] script $py exited with code $?"
             ran=true
@@ -69,7 +105,4 @@ done
 
     echo
     # echo "ALL DONE! ᕕ(⌐■_■)ᕗ ♪♬"
-    BOLD='\033[1m'
-    BABY_BLUE='\033[1;96m'
-    RESET='\033[0m'
-    printf "%b\n" "${BOLD}${BABY_BLUE}ALL DONE! ᕕ(⌐■_■)ᕗ ♪♬${RESET}"
+    printf "%b\n" "${BOLD}${PASTEL_VIOLET}ALL DONE! ᕕ(⌐■_■)ᕗ ♪♬${RESET}"

@@ -17,8 +17,27 @@ def main(argv=None) -> int:
     """
     argv = argv or sys.argv
     try:
-        result = ft_load("happydoggie.jpg")
-        print(result)
+        # Try a few common example filenames so the tester works even when
+        # the originally-named sample isn't present in the repository.
+        candidates = [
+            "happydoggie.jpg",
+            "animal.jpeg",
+            "landscape.jpg",
+        ]
+        result = None
+        for name in candidates:
+            result = ft_load(name)
+            if result is not None:
+                break
+
+        if result is None:
+            print(
+                "Warning: no example image found among candidates;"
+                " skipping demo",
+                file=sys.stderr,
+            )
+        else:
+            print(result)
     except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -27,3 +46,15 @@ def main(argv=None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# OUTPUT
+# $> python tester.py
+# The shape of image is: (257, 450, 3)
+# [[[19 42 83]
+# [23 42 84]
+# [28 43 84]
+# ...
+# [ 0 0 0]
+# [ 1 1 1]
+# [ 1 1 1]]]
+# $

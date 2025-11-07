@@ -10,6 +10,7 @@ purposes.
 from PIL import Image
 import numpy as np
 import sys
+from pathlib import Path
 
 
 def ft_load(path: str) -> np.ndarray | None:
@@ -19,7 +20,13 @@ def ft_load(path: str) -> np.ndarray | None:
     failure.
     """
     try:
-        img = Image.open(path)
+        p = Path(path)
+        if not p.exists():
+            alt = Path(__file__).resolve().parents[1] / "srcs" / p.name
+            if alt.exists():
+                p = alt
+
+        img = Image.open(p)
 
         if img.format not in ["JPEG", "JPG"]:
             msg = f"Error: Unsupported image format ({img.format})"

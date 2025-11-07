@@ -17,6 +17,15 @@ ENV_NAME="py310"
 SHIM_DIR="$HOME/bin"
 SHIM_PATH="$SHIM_DIR/norminette"
 
+# Color helpers
+BOLD='\033[1m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+PASTEL_VIOLET='\033[1;95m'
+RESET='\033[0m'
+
 echo "== setup_python_env: starting (repo: ${REPO_ROOT_DIR}) =="
 
 version_ge() {
@@ -45,7 +54,7 @@ install_miniconda() {
         echo "Miniconda already installed at $MINICONDA_DIR"
         return 0
     fi
-    echo "Installing Miniconda to $MINICONDA_DIR (non-interactive)..."
+        printf "%b\n" "${YELLOW}Installing Miniconda to $MINICONDA_DIR (non-interactive)...${RESET}"
     tmp="$(mktemp -d)"
     installer="$tmp/miniconda.sh"
     curl -fsSL -o "$installer" https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -54,10 +63,10 @@ install_miniconda() {
     echo "Miniconda installed to $MINICONDA_DIR"
     # initialize for zsh/bash shells by appending to rc only if not present
     if ! grep -q "$MINICONDA_DIR/bin" "$HOME/.bashrc" 2>/dev/null; then
-        echo "export PATH=\"$MINICONDA_DIR/bin:\$PATH\"" >> "$HOME/.bashrc"
+        printf "%b\n" "${GREEN}export PATH=\"$MINICONDA_DIR/bin:\$PATH\"${RESET}" >> "$HOME/.bashrc"
     fi
     if [ -f "$HOME/.zshrc" ] && ! grep -q "$MINICONDA_DIR/bin" "$HOME/.zshrc" 2>/dev/null; then
-        echo "export PATH=\"$MINICONDA_DIR/bin:\$PATH\"" >> "$HOME/.zshrc"
+        printf "%b\n" "${GREEN}export PATH=\"$MINICONDA_DIR/bin:\$PATH\"${RESET}" >> "$HOME/.zshrc"
     fi
 }
 
@@ -66,7 +75,7 @@ ensure_conda_env() {
     if "$MINICONDA_DIR/bin/conda" env list | awk '{print $1}' | grep -qx "$ENV_NAME"; then
         echo "Conda env '$ENV_NAME' already exists"
     else
-        echo "Creating conda env $ENV_NAME with Python 3.10..."
+        printf "%b\n" "${YELLOW}Creating conda env $ENV_NAME with Python 3.10...${RESET}"
         "$MINICONDA_DIR/bin/conda" create -y -n "$ENV_NAME" python=3.10
     fi
 }
@@ -80,10 +89,10 @@ ensure_shim() {
             echo "Norminette shim already present and points to $target_flake8"
             return 0
         else
-            echo "Updating existing $SHIM_PATH to point to $target_flake8"
+            printf "%b\n" "${YELLOW}Updating existing $SHIM_PATH to point to $target_flake8${RESET}"
         fi
     else
-        echo "Creating norminette shim at $SHIM_PATH -> $target_flake8"
+        printf "%b\n" "${YELLOW}Creating norminette shim at $SHIM_PATH -> $target_flake8${RESET}"
     fi
     cat > "$SHIM_PATH" <<EOF
 #!/usr/bin/env bash
@@ -107,19 +116,39 @@ ensure_path_in_rc() {
 
 main() {
     printf '\n'
+    # Quick pre-check: if python3.10 and flake8/norminette are already present
+    if command -v python3.10 >/dev/null 2>&1; then
+        py_ver_raw="$(python3.10 --version 2>&1 || true)"
+        py_ver="$(printf '%s' "$py_ver_raw" | awk '{print $2}')"
+        if [[ "$py_ver" == 3.10* ]]; then
+            if command -v norminette >/dev/null 2>&1; then
+                printf "%b\n" "${GREEN}Found python3.10 -> $py_ver${RESET}"
+                printf "%b\n" "${GREEN}Found norminette -> $(command -v norminette)${RESET}"
+                norminette --version || true
+                printf "%b\n" "${PASTEL_VIOLET}Environment correctly set up: python3.10 and norminette present${RESET}"
+                return 0
+            elif command -v flake8 >/dev/null 2>&1; then
+                printf "%b\n" "${GREEN}Found python3.10 -> $py_ver${RESET}"
+                printf "%b\n" "${GREEN}Found flake8 -> $(command -v flake8)${RESET}"
+                flake8 --version || true
+                printf "%b\n" "${PASTEL_VIOLET}Environment correctly set up: python3.10 and flake8 present${RESET}"
+                return 0
+            fi
+        fi
+    fi
     if python_info="$(find_python 2>/dev/null || true)"; then
         set -- $python_info
         py_cmd="$1"
         py_ver="$2"
-        echo "Found python: $py_cmd (version $py_ver)"
+        printf "%b\n" "${GREEN}Found python: $py_cmd (version $py_ver)${RESET}"
         if version_ge "$py_ver" "3.10"; then
-            echo "Using existing Python $py_ver"
+            printf "%b\n" "${GREEN}Using existing Python $py_ver${RESET}"
             # ensure pip and flake8
             if ! "$py_cmd" -m pip --version >/dev/null 2>&1; then
-                echo "pip not present for $py_cmd; attempting ensurepip..."
+                printf "%b\n" "${YELLOW}pip not present for $py_cmd; attempting ensurepip...${RESET}"
                 "$py_cmd" -m ensurepip --upgrade || true
             fi
-            echo "Installing flake8 into user site-packages (no sudo)"
+            printf "%b\n" "${YELLOW}Installing flake8 into user site-packages (no sudo)${RESET}"
             "$py_cmd" -m pip install --user --upgrade pip
             "$py_cmd" -m pip install --user flake8
             flake8_path="$(python3 -m site --user-base 2>/dev/null || true)"
@@ -138,10 +167,10 @@ main() {
                 ensure_shim "$real_flake8"
                 ensure_path_in_rc "$HOME/.local/bin"
             else
-                echo "Warning: could not locate flake8 binary after install"
+                printf "%b\n" "${RED}Warning: could not locate flake8 binary after install${RESET}"
             fi
         else
-            echo "Found Python $py_ver but < 3.10; will install Miniconda with Python 3.10"
+            printf "%b\n" "${YELLOW}Found Python $py_ver but < 3.10; will install Miniconda with Python 3.10${RESET}"
             install_miniconda
             ensure_conda_env
             # install flake8 into the env
@@ -153,11 +182,11 @@ main() {
                 ensure_shim "$env_flake8"
                 ensure_path_in_rc "$SHIM_DIR"
             else
-                echo "Unexpected: conda env pip not found at $env_pip"
+                printf "%b\n" "${RED}Unexpected: conda env pip not found at $env_pip${RESET}"
             fi
         fi
     else
-        echo "No usable python found; installing Miniconda and creating Python 3.10 env"
+        printf "%b\n" "${YELLOW}No usable python found; installing Miniconda and creating Python 3.10 env${RESET}"
         install_miniconda
         ensure_conda_env
         env_pip="$MINICONDA_DIR/envs/$ENV_NAME/bin/pip"
@@ -168,12 +197,12 @@ main() {
             ensure_shim "$env_flake8"
             ensure_path_in_rc "$SHIM_DIR"
         else
-            echo "Failed: expected pip at $env_pip but not found"
+            printf "%b\n" "${RED}Failed: expected pip at $env_pip but not found${RESET}"
             exit 2
         fi
     fi
 
-    echo "\n== Verification =="
+    printf "%b\n" "\n${BOLD}${CYAN}== Verification ==${RESET}"
     # print python and flake8 versions
     if command -v python3.10 >/dev/null 2>&1; then
         python3.10 --version || true
@@ -186,17 +215,17 @@ main() {
     fi
 
     if command -v norminette >/dev/null 2>&1; then
-        echo "norminette -> $(command -v norminette)"
+        printf "%b\n" "${GREEN}norminette -> $(command -v norminette)${RESET}"
         norminette --version || true
     elif command -v flake8 >/dev/null 2>&1; then
-        echo "flake8 -> $(command -v flake8)"
+        printf "%b\n" "${GREEN}flake8 -> $(command -v flake8)${RESET}"
         flake8 --version || true
     else
-        echo "flake8 / norminette not found after installation"
+        printf "%b\n" "${RED}flake8 / norminette not found after installation${RESET}"
         exit 3
     fi
 
-    echo "\n== Done: You may need to open a new terminal to pick up PATH changes. =="
+    printf "%b\n" "\n${GREEN}== Done: You may need to open a new terminal to pick up PATH changes. ==${RESET}"
 }
 
 main "$@"

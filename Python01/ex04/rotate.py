@@ -16,7 +16,10 @@ def ft_square_crop(image_array: np.ndarray, size: int = 400):
         print(square)
         return square
     except Exception as e:
-        print(f"❌ Error while cropping: {e}")
+        import sys
+
+        print(f"❌ Error while cropping: {e}", file=sys.stderr)
+        return None
 
 
 def ft_transpose(image_array: np.ndarray):
@@ -33,7 +36,10 @@ def ft_transpose(image_array: np.ndarray):
         print(transposed)
         return transposed
     except Exception as e:
-        print(f"❌ Error while transposing: {e}")
+        import sys
+
+        print(f"❌ Error while transposing: {e}", file=sys.stderr)
+        return None
 
 
 def ft_display(image_array: np.ndarray, title="Transposed Image"):
@@ -58,8 +64,10 @@ def main(argv=None) -> int:
         arr = ft_load("animal.jpeg")
         if arr is not None:
             square = ft_square_crop(arr, 400)
-            transposed = ft_transpose(square)
-            ft_display(transposed)
+            if square is not None:
+                transposed = ft_transpose(square)
+                if transposed is not None:
+                    ft_display(transposed)
     except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -70,3 +78,19 @@ if __name__ == "__main__":
     import sys
 
     sys.exit(main())
+
+# OUTPUT
+# $> python rotate.py
+# The shape of image is: (400, 400, 1) or (400, 400)
+# [[[167]
+# [180]
+# [194]
+# ...
+# [102]
+# [104]
+# [103]]]
+# New shape after Transpose: (400, 400)
+# [[167 180 194 ... 64 50 72]
+# ...
+# [115 116 119 ... 102 104 103]]
+# $>

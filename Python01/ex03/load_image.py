@@ -4,6 +4,8 @@
 # Use PIL & NumPy. pathlib/typing are optional for improved typing.
 from PIL import Image
 import numpy as np
+import sys
+from pathlib import Path
 # from pathlib import Path
 # from typing import Union
 
@@ -16,12 +18,21 @@ def ft_load(path: str) -> np.ndarray:
     image is successfully loaded.
     """
     try:
+        # Resolve path and fall back to Python01/srcs/<name> when missing
+        p = Path(path)
+        if not p.exists():
+            alt = Path(__file__).resolve().parents[1] / "srcs" / p.name
+            if alt.exists():
+                p = alt
+
         # Load the image
-        img = Image.open(path)  # put jpg path here?
+        img = Image.open(p)
 
         # Check supported formats
         if img.format not in ["JPEG", "JPG"]:
-            return f"Error: Unsupported image format ({img.format})"
+            msg = f"Error: Unsupported image format ({img.format})"
+            print(msg, file=sys.stderr)
+            return None
 
         print(f"The format of the image is: {img.format}")
 
@@ -37,9 +48,11 @@ def ft_load(path: str) -> np.ndarray:
         return img_array
 
     except FileNotFoundError:
-        return "Error: File not found"
+        print(f"Error: File not found: {path}", file=sys.stderr)
+        return None
     except Exception as e:
-        return f"Error: {e}"
+        print(f"Error: {e}", file=sys.stderr)
+        return None
 
 
 # Alternative pathlib/typing variants are purposely omitted to keep the

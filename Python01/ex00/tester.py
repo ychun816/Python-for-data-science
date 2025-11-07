@@ -29,3 +29,9 @@ def main(argv=None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# OUTPUT
+# $> python tester.py
+# [22.507863455018317, 29.0359168241966] <class 'list'>
+# [False, True]
+# $>

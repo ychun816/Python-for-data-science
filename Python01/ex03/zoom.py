@@ -21,7 +21,10 @@ def ft_zoom(image_array: np.ndarray, zoom_size: int = 400):
         return zoomed
 
     except Exception as e:
-        print(f"Error: {e}")
+        import sys
+
+        print(f"Error: {e}", file=sys.stderr)
+        return None
 
 
 def ft_display(image_array: np.ndarray, title="Zoomed Image"):
@@ -46,7 +49,8 @@ def main(argv=None) -> int:
         array = ft_load("animal.jpeg")
         if array is not None:
             zoomed = ft_zoom(array, 400)
-            ft_display(zoomed)
+            if zoomed is not None:
+                ft_display(zoomed)
     except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1

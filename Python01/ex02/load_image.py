@@ -10,6 +10,7 @@ exercise scripts.
 from PIL import Image
 import numpy as np
 import sys
+from pathlib import Path
 
 
 def ft_load(path: str) -> np.ndarray | None:
@@ -18,12 +19,21 @@ def ft_load(path: str) -> np.ndarray | None:
     Only basic JPG/JPEG images are handled here.
     """
     try:
-        img = Image.open(path)
+        p = Path(path)
+        if not p.exists():
+            # Try repository-local fallback: Python01/srcs/<filename>
+            alt = Path(__file__).resolve().parents[1] / "srcs" / p.name
+            if alt.exists():
+                p = alt
+        if not p.exists():
+            raise FileNotFoundError(p)
+
+        img = Image.open(p)
         img = img.convert("RGB")
         arr = np.array(img)
         return arr
     except FileNotFoundError:
-        print("Error: File not found.", file=sys.stderr)
+        print(f"Error: File not found: {path}", file=sys.stderr)
         return None
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
