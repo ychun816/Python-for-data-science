@@ -12,11 +12,10 @@ from pimp_image import ft_invert, ft_red, ft_green, ft_blue, ft_grey
 
 
 def _safe_show_or_save(array, name: str, out_dir="out"):
-    """Try to display an image with matplotlib.
+    """Try to display an image with matplotlib, otherwise save to out/<name>.jpg.
 
-    If display is unavailable, save to out/<name>.jpg. This helper is
-    resilient: it won't raise if display libraries are missing (useful
-    for CI or headless environments).
+    This helper is resilient: it won't raise if display libraries are missing
+    (useful for CI or headless environments).
     """
     try:
         import matplotlib.pyplot as plt
@@ -36,14 +35,10 @@ def _safe_show_or_save(array, name: str, out_dir="out"):
             img = Image.fromarray(array.astype('uint8'))
             path = os.path.join(out_dir, f"{name}.jpg")
             img.save(path)
-            # keep the print call short to satisfy line-length checks
-            print("Saved", path)
+            print(f"Saved {path}")
             return
         except Exception as exc:  # last-resort silence; print warning
-            print(
-                f"Warning: could not show/save {name}: {exc}",
-                file=sys.stderr,
-            )
+            print(f"Warning: could not show/save {name}: {exc}", file=sys.stderr)
             return
 
 
