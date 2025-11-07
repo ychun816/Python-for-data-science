@@ -28,7 +28,16 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 
+### NOTES ###
 
+# | Data Type    | Syntax Example          | Ordered?  | Mutable?  | Allows Duplicates?  | How to Access / Modify                                          |
+# | ------------ | ----------------------- | --------  | --------  | ------------------  | --------------------------------------------------------------- |
+# | List         | `["Hello", "World!"]`   | ✅ Yes    | ✅ Yes    | ✅ Yes              | By index → `list[0]` <br> Change → `list[1] = "Hi"`             |
+# | Tuple        | `("Hello", "France!")`  | ✅ Yes    | ❌ No     | ✅ Yes              | By index → `tuple[0]` <br> (cannot modify, must recreate)       |
+# | Set          | `{"Hello", "Paris!"}`   | ❌ No     | ✅ Yes    | ❌ No (only unique) | Check membership → `"Hello" in set` <br> Add → `set.add("new")` |
+# | Dict         | `{"Hello": "42Paris!"}` | ✅ Yes*   | ✅ Yes    | Keys ❌, Values ✅  | By key → `dict["Hello"]` <br> Change → `dict["Hello"] = "Hi"`   |
+
+#############
 
 ### PRE-CHECK ###
 
@@ -72,7 +81,5 @@ if __name__ == "__main__":
 # python --version
 # pip install --upgrade pip
 # pip install flake8
-
-
 
 #################
