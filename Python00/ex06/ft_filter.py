@@ -36,7 +36,7 @@ if __name__ == "__main__":
 # $>
 
 
-# NOTES
+# NOTES ###
 
 # return [item for item in iterable if function(item)]
 # -> "For every element in iterable, include it in a new list."

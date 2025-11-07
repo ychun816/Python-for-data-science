@@ -19,7 +19,7 @@ def main():
         text = input("Give me the text to count?\n")
         # print(text)
 
-    # init
+    # init vars to count
     upper = 0
     lower = 0
     punct = 0

@@ -26,3 +26,7 @@ def all_thing_is_obj(value: any) -> int:
     else:
         print("this type not found")
     return 42
+
+# NOTES
+# - isinstance() function checks if a value is of a specific type
+# - type() function returns the type of a value

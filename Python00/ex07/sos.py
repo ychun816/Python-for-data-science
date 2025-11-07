@@ -94,13 +94,16 @@ if __name__ == "__main__":
 # AssertionError: the arguments are bad
 # $>
 
-# NOTES
+# NOTES ###
 # morse code
 # https://www.geeksforgeeks.org/python/morse-code-translator-python/
+
 # raise
 # -> like throw in c++
+
 # .strip()
-# remove trailing space
+# -> remove trailing space
+
 # end="" means:
 # "Don't add a newline after printing -> end with nothing (empty string)"
 #
