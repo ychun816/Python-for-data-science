@@ -68,6 +68,34 @@ def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
     return result
 
 
+def main() -> int:
+    """Simple CLI demo for the give_bmi utilities.
+
+    This function is intentionally small and only used when the module is
+    executed as a script. It catches all exceptions and returns a numeric
+    exit code so callers (CI/test harness) never receive an uncaught
+    exception.
+    """
+    try:
+        height = [2.71, 1.15]
+        weight = [165.3, 38.4]
+        bmi = give_bmi(height, weight)
+        print(bmi, type(bmi))
+        print(apply_limit(bmi, 26))
+    except Exception as exc:
+        import sys
+
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+
+    sys.exit(main())
+
+
 # def main():
 #     # simple demo when run as a script
 #     height = [2.71, 1.15]
@@ -75,7 +103,6 @@ def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
 #     bmi = give_bmi(height, weight)
 #     print(bmi, type(bmi))
 #     print(apply_limit(bmi, 26))
-
 
 # When to define main:
 # - Module with a guarded demo main() (convenience)

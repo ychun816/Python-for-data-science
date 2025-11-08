@@ -3,6 +3,7 @@
 from load_image import ft_load
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 
 def ft_square_crop(image_array: np.ndarray, size: int = 400):
@@ -16,8 +17,6 @@ def ft_square_crop(image_array: np.ndarray, size: int = 400):
         print(square)
         return square
     except Exception as e:
-        import sys
-
         print(f"❌ Error while cropping: {e}", file=sys.stderr)
         return None
 
@@ -36,8 +35,6 @@ def ft_transpose(image_array: np.ndarray):
         print(transposed)
         return transposed
     except Exception as e:
-        import sys
-
         print(f"❌ Error while transposing: {e}", file=sys.stderr)
         return None
 
@@ -58,7 +55,6 @@ def main(argv=None) -> int:
     result. Returns 0 on success, 1 on error and catches exceptions so none
     escape import-time execution.
     """
-    import sys
     argv = argv or sys.argv
     try:
         arr = ft_load("animal.jpeg")
@@ -75,8 +71,6 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
-    import sys
-
     sys.exit(main())
 
 # OUTPUT

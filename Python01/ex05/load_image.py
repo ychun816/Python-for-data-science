@@ -87,3 +87,40 @@ def ft_load(path: str) -> np.ndarray | None:
 #     except Exception as e:
 #         print(f"Unexpected error: {e}")
 #         return None
+
+
+def main() -> int:
+    """Small demo for ex05 loader to keep the module import-safe.
+
+    The demo attempts to load a few candidate images and prints a
+    short message. All exceptions are caught so importing this module
+    is side-effect free.
+    """
+    try:
+        candidates = [
+            "happydoggie.jpg",
+            "animal.jpeg",
+            "landscape.jpg",
+        ]
+        result = None
+        for name in candidates:
+            result = ft_load(name)
+            if result is not None:
+                break
+
+        if result is None:
+            print(
+                "Warning: no example image found among candidates; "
+                "skipping demo",
+                file=sys.stderr,
+            )
+        else:
+            print(result)
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

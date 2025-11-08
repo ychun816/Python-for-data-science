@@ -29,3 +29,30 @@ def slice_me(family: list, start: int, end: int) -> list:
     print(f"My new shape is : ({len(new_family)}, {cols})")
 
     return new_family.tolist()
+
+
+def main() -> int:
+    """Demo runner for the array2D slicing helper.
+
+    The demo is guarded and catches exceptions so importing this module
+    never triggers output or uncaught exceptions.
+    """
+    try:
+        family = [[1.80, 78.4],
+                  [2.15, 102.7],
+                  [2.10, 98.5],
+                  [1.88, 75.2]]
+        print(slice_me(family, 0, 2))
+        print(slice_me(family, 1, -2))
+    except Exception as exc:
+        import sys
+
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    import sys
+
+    sys.exit(main())

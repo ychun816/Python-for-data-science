@@ -57,3 +57,41 @@ def ft_load(path: str) -> np.ndarray:
 
 # Alternative pathlib/typing variants are purposely omitted to keep the
 # solution minimal and aligned with the exercise expectations.
+
+
+def main() -> int:
+    """Demo runner for the ex03 image loader.
+
+    Catches all exceptions and returns an exit code to avoid uncaught
+    exceptions when executed by tests or imported in other modules.
+    """
+    try:
+        # Try a few common example filenames so the tester works even when
+        # the originally-named sample isn't present in the repository.
+        candidates = [
+            "happydoggie.jpg",
+            "animal.jpeg",
+            "landscape.jpg",
+        ]
+        result = None
+        for name in candidates:
+            result = ft_load(name)
+            if result is not None:
+                break
+
+        if result is None:
+            print(
+                "Warning: no example image found among candidates; "
+                "skipping demo",
+                file=sys.stderr,
+            )
+        else:
+            print(result)
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
