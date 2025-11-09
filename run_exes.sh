@@ -69,9 +69,10 @@ for repo_name in "${REPOS[@]}"; do
         printf "%b\n" "${BOLD}${CYAN}Exercise: $(basename "$ex")${RESET}"
         printf "%b\n" "${BOLD}${BABY_BLUE}----------------------------------------------------------------${RESET}"
     ran=false
-    for py in "$ex"/*.py; do
-        # Only run files that contain a main guard to avoid importing modules
-        if grep -q "__name__ *== *['\"]__main__['\"]" "$py"; then
+            for py in "$ex"/*.py; do
+                # Run files that contain a main guard, or runner/test files named
+                # `tester.py` (some exercises use a tester script without a guard).
+                if grep -q "__name__ *== *['\"]__main__['\"]" "$py" || [ "$(basename "$py")" = "tester.py" ]; then
                 echo
                 printf "%b\n" "${GREEN}--- Running: $py ---${RESET}"
             # run in a subshell so it doesn't affect this script's environment

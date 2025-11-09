@@ -128,29 +128,34 @@ if __name__ == "__main__":
         except Exception:
             continue
 
-# # NOTES ############
+# NOTES
+#
+# This module provides a simple zoom helper for images. Usage:
+#
+# - rgb2gray(rgb) -> np.ndarray
+#   Convert an RGB image (H x W x 3) to a grayscale 2D uint8 array
+#   using standard luminance weights. The result is clipped to 0..255.
+#
+# - ft_zoom(path: str, zoom_size: int = 400, zoom: float = 1.0)
+#   Load the image at ``path`` using ``ft_load`` (from the exercise
+#   loader), convert it to grayscale, crop a centered region according
+#   to ``zoom`` and resize that crop to ``zoom_size``. The function
+#   prints the input and resulting array shapes and displays the image
+#   with matplotlib. The printed shape is (H, W, 1) for compatibility
+#   with the exercise tester output.
+#
+# Notes on parameters and behavior:
+# - ``zoom`` >= 1.0 zooms in; values <= 0 are treated as 1.0.
+# - If the requested crop is larger than the image, the crop size is
+#   clamped to the image dimensions and the result is scaled up as
+#   necessary.
+# - The function handles KeyboardInterrupt (Ctrl+C) by closing any
+#   open matplotlib figure and exiting cleanly.
+#
+# Example (run directly):
+#   python zoom.py
+#
 
-
-# ###################
-
-
-# # OUTPUT ############
-# # $> python zoom.py
-# # The shape of image is: (768, 1024, 3)
-# # [[[120 111 132]
-# # [139 130 151]
-# # [155 146 167]
-# # ...
-# # [120 156 94]
-# # [119 154 90]
-# # [118 153 89]]]
-# # New shape after slicing: (400, 400, 1) or (400, 400)
-# # [[[167]
-# # [180]
-# # [194]
-# # ...
-# # [102]
-# # [104]
-# # [103]]]
-# # $>
-# ###################
+# Output (example):
+#   The shape of image is: (768, 1024, 3)
+#   New shape after slicing: (400, 400, 1) or (400, 400)

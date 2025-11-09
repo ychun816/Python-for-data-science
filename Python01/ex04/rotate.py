@@ -89,23 +89,55 @@ def main(argv=None) -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
-# NOTES ############
+# NOTES
+#
+# This module provides small image utilities used by the exercise:
+#
+# Public functions
+# - ft_square_crop(image_array: np.ndarray,
+#                  size: int = 400) -> np.ndarray | None
+#   Crop the center square of the provided image array and return the
+#   cropped region. On error the function prints a diagnostic to stderr
+#   and returns None. The function also prints the crop shape and the
+#   array so the exercise tester output matches the expected format.
+#
+# - ft_transpose(image_array: np.ndarray) -> np.ndarray | None
+#   Transpose rows and columns. If the input is a color image (3
+#   channels) the function first converts it to grayscale by averaging
+#   channels so the transposed result is 2D. The function prints the
+#   new shape and the transposed array. Returns the transposed array
+#   or None on error.
+#
+# - ft_display(image_array: np.ndarray, title: str = "Transposed Image")
+#   Display the provided image using matplotlib. The function sets a
+#   simple ASCII title and axis labels to avoid missing-glyph warnings
+#   on systems without CJK fonts. It handles KeyboardInterrupt by
+#   closing the figure and returning cleanly.
+#
+# - main(argv=None) -> int
+#   Demo runner: loads an example image (``animal.jpeg``) using
+#   ``ft_load`` from the exercise loader, crops a 400x400 square,
+#   transposes it and displays the result. Returns 0 on success and
+#   non-zero on error so callers can use ``sys.exit(main())``.
+#
+# Signal/interrupt behavior
+# - The module and helpers catch KeyboardInterrupt where appropriate
+#   and close matplotlib figures before exiting to avoid long
+#   tracebacks when the user presses Ctrl+C while a window is open.
+#
+# Example
+#   python rotate.py
 
-####################
-
-# OUTPUT ############
-# $> python rotate.py
-# The shape of image is: (400, 400, 1) or (400, 400)
-# [[[167]
-# [180]
-# [194]
-# ...
-# [102]
-# [104]
-# [103]]]
-# New shape after Transpose: (400, 400)
-# [[167 180 194 ... 64 50 72]
-# ...
-# [115 116 119 ... 102 104 103]]
-# $>
-####################
+# OUTPUT (example)
+#   The shape of image is: (400, 400, 1) or (400, 400)
+#   [[[167]
+#    [180]
+#    [194]
+#    ...
+#    [102]
+#    [104]
+#    [103]]]
+#   New shape after Transpose: (400, 400)
+#   [[167 180 194 ... 64 50 72]
+#    ...
+#    [115 116 119 ... 102 104 103]]

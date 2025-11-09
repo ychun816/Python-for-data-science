@@ -243,7 +243,6 @@ def show_all_filters():
 
     return 0
 
-# NOTES
 
 # NOTES
 #
