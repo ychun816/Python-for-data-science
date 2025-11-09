@@ -38,3 +38,26 @@ def ft_grey(array: np.ndarray) -> np.ndarray:
     gray = (array[:, :, 0] + array[:, :, 1] + array[:, :, 2]) // 3
     result = np.stack((gray, gray, gray), axis=2)  # keep 3 channels
     return result
+
+# NOTES ############
+
+####################            
+
+# TESTER.PY ########
+
+
+# OUTPUT
+# $> python tester.py
+# The shape of image is: (257, 450, 3)
+# [[[19 42 83]
+# [23 42 84]
+# [28 43 84]
+# ...
+# [ 0 0 0]
+# [ 1 1 1]
+# [ 1 1 1]]]
+# ...
+# Inverts the color of the image received.
+# $>
+
+####################

@@ -73,6 +73,11 @@ def main(argv=None) -> int:
 if __name__ == "__main__":
     sys.exit(main())
 
+# NOTES ############
+
+####################
+
+# TESTER.PY ########
 # OUTPUT
 # $> python rotate.py
 # The shape of image is: (400, 400, 1) or (400, 400)
@@ -88,3 +93,4 @@ if __name__ == "__main__":
 # ...
 # [115 116 119 ... 102 104 103]]
 # $>
+####################

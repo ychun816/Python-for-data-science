@@ -30,29 +30,48 @@ def slice_me(family: list, start: int, end: int) -> list:
 
     return new_family.tolist()
 
+# NOTES ########
+# np.array(family): convert list-of-lists to a NumPy array.
+# np_array.shape: (rows, cols) tuple with array dimensions.
+# new_family = np_array[start:end]: slice rows start..end-1.
+# new_family.tolist(): convert NumPy array back to Python lists.
 
-def main() -> int:
-    """Demo runner for the array2D slicing helper.
+###################################
 
-    The demo is guarded and catches exceptions so importing this module
-    never triggers output or uncaught exceptions.
-    """
-    try:
-        family = [[1.80, 78.4],
-                  [2.15, 102.7],
-                  [2.10, 98.5],
-                  [1.88, 75.2]]
-        print(slice_me(family, 0, 2))
-        print(slice_me(family, 1, -2))
-    except Exception as exc:
-        import sys
+# TESTER.PY ########
 
-        print(f"Error: {exc}", file=sys.stderr)
-        return 1
-    return 0
+# from array2D import slice_me
 
 
-if __name__ == "__main__":
-    import sys
+# def main(argv=None) -> int:
+#     """Run the array2D demo and print slices.
 
-    sys.exit(main())
+#     Returns 0 on success, 1 on any error.
+#     """
+#     argv = argv or sys.argv
+#     try:
+#         family = [[1.80, 78.4],
+#                   [2.15, 102.7],
+#                   [2.10, 98.5],
+#                   [1.88, 75.2]]
+#         print(slice_me(family, 0, 2))
+#         print(slice_me(family, 1, -2))
+#     except Exception as exc:
+#         print(f"Error: {exc}", file=sys.stderr)
+#         return 1
+#     return 0
+
+
+# if __name__ == "__main__":
+#     sys.exit(main())
+
+# OUTPUT
+# $> python test_array2D.py
+# My shape is : (4, 2)
+# My new shape is : (2, 2)
+# [[1.8, 78.4], [2.15, 102.7]]
+# My shape is : (4, 2)
+# My new shape is : (1, 2)
+# [[2.15, 102.7]]
+# $
+#############################

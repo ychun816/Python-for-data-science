@@ -67,6 +67,27 @@ def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
     # the boolean list showing which BMI values exceed the limit.
     return result
 
+def main(argv=None) -> int:
+    """Run a short demo of ``give_bmi`` and ``apply_limit``.
+
+    Returns 0 on success or 1 on error (so callers can use ``sys.exit``).
+    """
+    argv = argv or sys.argv
+    try:
+        height = [2.71, 1.15]
+        weight = [165.3, 38.4]
+        bmi = give_bmi(height, weight)
+        print(bmi, type(bmi))
+        print(apply_limit(bmi, 26))
+    except Exception as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+
 # NOTES ########
 # - Code at module level runs when the file is executed or imported.
 # - Keep demo code inside a guarded main() so importing is safe.
@@ -79,6 +100,9 @@ def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
 
 # - [b > limit for b in bmi]: list comprehension producing booleans
 #   indicating which BMI values exceed the given limit.
+
+# sys.exit(main()) runs your program's main() function 
+# and asks Python to terminate process using main()'s return value as the process exit code.
 ############################
 
 # TESTER.PY ########

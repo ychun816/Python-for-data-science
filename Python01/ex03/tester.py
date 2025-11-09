@@ -17,7 +17,6 @@ def main(argv=None) -> int:
     argv = argv or sys.argv
     try:
         candidates = [
-            "happydoggie.jpg",
             "animal.jpeg",
             "landscape.jpg",
         ]
@@ -43,3 +42,6 @@ def main(argv=None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# OUTPUT (example)
+# The shape of image is: (768, 1024, 3)
