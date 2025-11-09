@@ -1,8 +1,4 @@
-# #!/usr/bin/env python3
-
-from PIL import Image
-import numpy as np
-
+#!/usr/bin/env python3
 
 """Simple image loader for ex02 using Pillow and NumPy.
 

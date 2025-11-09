@@ -49,13 +49,15 @@ def ft_zoom(path: str, zoom_size: int = 400, zoom: float = 1.0):
         # Support 2D grayscale image
         h, w = img.shape  # unpacking image height and width
 
-        # Zoom logic: zoom >= 1.0 means zoom in (crop smaller area then
-        # resize back to zoom_size). For zoom < 1.0 we treat as 1.0.
+        # Zoom logic: zoom >= 1.0 means zoom in (crop smaller area,
+        # then resize back to zoom_size). For zoom < 1.0 we treat as
+        # 1.0.
         if zoom <= 0:
             zoom = 1.0
         zoom = max(1.0, float(zoom))
 
-        # Compute the crop size in source pixels: smaller crop -> larger zoom.
+        # Compute the crop size in source pixels: smaller crop -> larger
+        # zoom.
         crop_h = int(round(zoom_size / zoom))
         crop_w = int(round(zoom_size / zoom))
 
@@ -70,9 +72,9 @@ def ft_zoom(path: str, zoom_size: int = 400, zoom: float = 1.0):
         # Centered crop
         cropped = img[start_y:start_y + crop_h, start_x:start_x + crop_w]
 
-        # If crop is same size as desired output, keep it; otherwise resize
+        # If crop is same size as desired output, keep it; otherwise
+        # resize the cropped region back to the requested zoom_size.
         if (crop_h, crop_w) != (zoom_size, zoom_size):
-            # Use Pillow to resize the 2D grayscale array back to (zoom_size, zoom_size)
             pil = Image.fromarray(cropped)
             pil = pil.resize((zoom_size, zoom_size), resample=Image.BICUBIC)
             img_out = np.array(pil).astype(np.uint8)
@@ -85,7 +87,9 @@ def ft_zoom(path: str, zoom_size: int = 400, zoom: float = 1.0):
             img_out = img_out[:, :, np.newaxis]
 
         # Print both the (H, W, 1) form and the squeezed (H, W) form
-        print(f"New shape after slicing: {img_out.shape} or {img_out.squeeze().shape}")
+        s1 = img_out.shape
+        s2 = img_out.squeeze().shape
+        print(f"New shape after slicing: {s1} or {s2}")
         print(img_out)
 
         plt.imshow(img_out, cmap=plt.get_cmap('gray'))
@@ -110,8 +114,9 @@ def ft_zoom(path: str, zoom_size: int = 400, zoom: float = 1.0):
 if __name__ == "__main__":
     # Try a couple of common example filenames so the script prints
     # the expected output when run directly.
-    candidates = ["animal.jpeg", 
-    #"landscape.jpg"
+    candidates = [
+        "animal.jpeg",
+        # "landscape.jpg",
     ]
     for name in candidates:
         try:
