@@ -33,22 +33,17 @@ def ft_load(path: str) -> np.ndarray | None:
 
         # Image.open(p): open image file as a Pillow Image object.
         img = Image.open(p)
+
         # convert('RGB'): ensure image has three color channels (R,G,B).
         img = img.convert("RGB")
+
         # np.array(img): convert Pillow Image to a NumPy ndarray.
         arr = np.array(img)
+
         # The returned array is a 3D NumPy array with shape
-        # (rows, cols, channels). Each innermost triplet is the
-        # pixel's [R, G, B] values in the 0-255 range (usually
-        # dtype uint8). The printed representation shows rows and
-        # columns; large arrays are truncated with '...' by NumPy.
-        # Example shape: (257, 450, 3)
-        # Print the array shape so simple testers that just print the
-        # returned value also show the image dimensions beforehand.
-        # This keeps the tester minimal while producing the requested
-        # two-line output (shape then array).
         print(f"The shape of image is: {arr.shape}")
         return arr
+
     except FileNotFoundError:
         # file=sys.stderr: print the error to standard error, not stdout.
         print(f"Error: File not found: {path}", file=sys.stderr)
@@ -66,7 +61,7 @@ def main(argv=None) -> int:
         # Try a few common example filenames so the tester works even when
         # the originally-named sample isn't present in the repository.
         candidates = [
-            "animal.jpeg",
+            # "animal.jpeg",
             "landscape.jpg",
         ]
         result = None
@@ -95,16 +90,20 @@ if __name__ == "__main__":
 # NOTES ############
 # alt = Path(__file__).resolve().parents[1] / "srcs" / p.name
 # - builds a fallback path relative to this file (project-local).
+
 # Image.open(p) : open the image file using Pillow.
+
 # img.convert("RGB") : ensure the image has 3 color channels (R,G,B).
+
 # np.array(img) : convert the Pillow Image to a NumPy ndarray.
+
 # file=sys.stderr : print error messages to stderr (not stdout).
+
 # return None : used to signal a failure to the caller.
-#
+
 # About the printed NumPy array (tester output): ###
 # - The array has shape (rows, cols, channels), e.g. (257, 450, 3).
 # 257 列（高），450 欄（寬），3 個色彩通道（R,G,B）
-
 
 # - Each innermost triplet is a pixel: [R, G, B] values in 0..255.
 # - The dtype is usually uint8 (small integers per channel).
