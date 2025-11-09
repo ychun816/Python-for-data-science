@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!/usr/bin/env python3
 
 from load_image import ft_load
 import numpy as np
@@ -12,12 +12,12 @@ def ft_square_crop(image_array: np.ndarray, size: int = 400):
         h, w, c = image_array.shape
         start_x = w // 2 - size // 2
         start_y = h // 2 - size // 2
-        square = image_array[start_y:start_y+size, start_x:start_x+size, :]
+        square = image_array[start_y:start_y + size, start_x:start_x + size, :]
         print(f"The shape of image is: {square.shape}")
         print(square)
         return square
     except Exception as e:
-        print(f"❌ Error while cropping: {e}", file=sys.stderr)
+        print(f"Error while cropping: {e}", file=sys.stderr)
         return None
 
 
@@ -26,26 +26,38 @@ def ft_transpose(image_array: np.ndarray):
     try:
         # If color image, convert to grayscale first (optional)
         if image_array.shape[2] == 3:
-            # Convert RGB → grayscale by averaging channels
+            # Convert RGB to grayscale by averaging channels
             gray = np.mean(image_array, axis=2).astype(int)
         else:
             gray = image_array
-        transposed = gray.T  # transpose rows ↔ columns
+        transposed = gray.T  # transpose rows <-> columns
         print(f"New shape after Transpose: {transposed.shape}")
         print(transposed)
         return transposed
     except Exception as e:
-        print(f"❌ Error while transposing: {e}", file=sys.stderr)
+        print(f"Error while transposing: {e}", file=sys.stderr)
         return None
 
 
 def ft_display(image_array: np.ndarray, title="Transposed Image"):
-    """Display image with axes / 顯示圖片與座標軸"""
+    """Display image with axes."""
     plt.imshow(image_array, cmap='gray')
     plt.title(title)
-    plt.xlabel("X-axis / X軸")
-    plt.ylabel("Y-axis / Y軸")
-    plt.show()
+    # Use ASCII-only labels to avoid missing-glyph warnings in environments
+    # that don't have CJK fonts installed.
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    try:
+        plt.show()
+    except KeyboardInterrupt:
+        # User pressed Ctrl-C while interactive window was open; close the
+        # figure and return cleanly.
+        try:
+            plt.close()
+        except Exception:
+            pass
+        print("Interrupted by user (KeyboardInterrupt)", file=sys.stderr)
+        return
 
 
 def main(argv=None) -> int:
@@ -64,6 +76,10 @@ def main(argv=None) -> int:
                 transposed = ft_transpose(square)
                 if transposed is not None:
                     ft_display(transposed)
+    except KeyboardInterrupt:
+        # Handle user interrupts gracefully
+        print("Interrupted by user (KeyboardInterrupt)", file=sys.stderr)
+        return 1
     except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
@@ -77,8 +93,7 @@ if __name__ == "__main__":
 
 ####################
 
-# TESTER.PY ########
-# OUTPUT
+# OUTPUT ############
 # $> python rotate.py
 # The shape of image is: (400, 400, 1) or (400, 400)
 # [[[167]
