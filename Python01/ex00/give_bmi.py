@@ -67,46 +67,6 @@ def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
     # the boolean list showing which BMI values exceed the limit.
     return result
 
-
-def main() -> int:
-    """Simple CLI demo for the give_bmi utilities.
-
-    This function is intentionally small and only used when the module is
-    executed as a script. It catches all exceptions and returns a numeric
-    exit code so callers (CI/test harness) never receive an uncaught
-    exception.
-    """
-    try:
-        height = [2.71, 1.15]
-        weight = [165.3, 38.4]
-        bmi = give_bmi(height, weight)
-        print(bmi, type(bmi))
-        print(apply_limit(bmi, 26))
-    except Exception as exc:
-        import sys
-
-        print(f"Error: {exc}", file=sys.stderr)
-        return 1
-    return 0
-
-
-if __name__ == "__main__":
-    import sys
-
-    sys.exit(main())
-
-
-# In Python, when you write code directly in the file (outside any function or class), 
-# it will run immediately when the file is executed or imported.
-# -> global code always runs, even if you just import the file
-# -> when someone imports your file (for testing or reuse),
-# you don’t want your code to execute automatically — it should only run when you explicitly tell it to.
-# def main():
-#     # your program here
-# if __name__ == "__main__":
-#     main()
-
-
 # def main():
 #     # simple demo when run as a script
 #     height = [2.71, 1.15]
@@ -119,10 +79,3 @@ if __name__ == "__main__":
 # - Module with a guarded demo main() (convenience)
 # - Safe to import; demo runs only when you call python give_bmi.py
 # - Module as CLI (use when you want command-line behavior)
-
-# | Name       | English Explanation                                      | 中文解釋                         |
-# | ---------- | -------------------------------------------------------- | ---------------------------- |
-# | `__name__` | Identifier of the module; `"__main__"` when run directly | 模組名稱；當直接執行檔案時等於 `"__main__"` |
-# | `__main__` | The name Python assigns to the top-level script          | Python 對主程式檔案給的名稱            |
-# | `__doc__`  | String containing the function’s documentation           | 函式或模組的文件字串（說明文字）             |
-
