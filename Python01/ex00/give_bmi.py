@@ -11,6 +11,8 @@ Functions are import-safe; guard any demo code using::
         ...
 """
 
+import sys
+
 
 def give_bmi(
     height: list[int | float],
@@ -31,6 +33,8 @@ def give_bmi(
         ValueError: If the lengths of the input lists differ.
         TypeError: If any height or weight value is not an int or float.
     """
+
+    # required modules are imported at module level
 
     # handle error
     if len(height) != len(weight):
@@ -67,6 +71,7 @@ def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
     # the boolean list showing which BMI values exceed the limit.
     return result
 
+
 def main(argv=None) -> int:
     """Run a short demo of ``give_bmi`` and ``apply_limit``.
 
@@ -101,8 +106,8 @@ if __name__ == "__main__":
 # - [b > limit for b in bmi]: list comprehension producing booleans
 #   indicating which BMI values exceed the given limit.
 
-# sys.exit(main()) runs your program's main() function 
-# and asks Python to terminate process using main()'s return value as the process exit code.
+# sys.exit(main()) runs your program's main() function and asks Python to
+# terminate the process using main()'s return value as the process exit code.
 ############################
 
 # TESTER.PY ########
