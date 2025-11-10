@@ -2,11 +2,25 @@
 
 from load_csv import load
 
+print(load("life_expectancy_years.csv"))
 
-def main() -> None:
-    """Simple tester for the CSV loader used during development."""
-    print(load("life_expectancy_years.csv"))
+# OUTPUT
+# $> python tester.py
+# Loading dataset of dimensions (195, 302)
+# country 1800 1801 1802 ... 2100
+# Afghanistan 28.2 28.2 28.2 ... 76.8
+# $>
 
-
-if __name__ == "__main__":
-    main()
+# Example usage (commented): get the raw pandas DataFrame or print the
+# full table using the DatasetView convenience methods.
+#
+# v = load("life_expectancy_years.csv")
+# df = v.raw()
+# print(df.to_string())
+#
+# # or request the raw DataFrame directly from load:
+# df2 = load("life_expectancy_years.csv", preview=False)
+# print(df2.to_string())
+#
+# # If you enable the DatasetView.full() helper (it's commented in
+# # load_csv.py), you can call: # v.full()
