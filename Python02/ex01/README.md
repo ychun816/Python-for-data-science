@@ -20,6 +20,23 @@
 | `plt.show()`                                           | matplotlib.pyplot    | Display the figure                             | Blocks execution until window is closed                |
 | `try … except Exception as e`                          | Python built-in      | Handle errors safely                           | Useful to catch any runtime error                      |
 | `raise RuntimeError(f"...")`                           | Python built-in      | Re-throw an error with custom message          | Keeps program robust and debuggable                    |
+## CLI usage
+
+The plotting script includes a minimal CLI. From the `ex01`
+directory you can run:
+
+```bash
+# generate the France plot (saved to france_plot.png)
+MPLBACKEND=Agg python3 aff_life.py
+
+# specify a different output filename
+MPLBACKEND=Agg python3 aff_life.py France -o france_custom.png
+```
+
+By default the script uses the France tick marks and labels shown in
+the exercise. Use the optional `-o/--out` flag to change the output
+filename. In an interactive session omit `MPLBACKEND=Agg` to open the
+plot window instead of saving silently.
               |
 
 ---
