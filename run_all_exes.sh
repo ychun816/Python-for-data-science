@@ -31,8 +31,8 @@ TEST_ARG="Python 3.0, released in 2008, was a major revision that is not complet
 # Explicit list of repos. Comment out lines for repos you don't want to run.
 REPOS=(
     # "Python00"
-    "Python01"
-    # "Python02"
+    # "Python01"
+    "Python02"
     # "Python03"
     # "Python04"
 )
@@ -77,21 +77,76 @@ for repo_name in "${REPOS[@]}"; do
                 printf "%b\n" "${GREEN}--- Running: $py ---${RESET}"
             # run in a subshell so it doesn't affect this script's environment
             (
-                cd "$ex"
-                # use python3 where available
-                if command -v python3 >/dev/null 2>&1; then
-                    if [ "$(basename "$ex")" = "ex05" ]; then
-                        # pass the long test argument to ex05
-                        python3 "$(basename "$py")" "$TEST_ARG"
+                # Default: run from the exercise directory so relative imports/paths work
+                run_cwd="$ex"
+                run_cmd=( )
+
+                exbase=$(basename "$ex")
+                pybase=$(basename "$py")
+
+                # Special-case ex00 tester: data lives in "$repo/data" so run the
+                # tester from that directory (tester.py expects the CSV in cwd).
+                if [ "$exbase" = "ex00" ] && [ "$pybase" = "tester.py" ]; then
+                    run_cwd="$repo/data"
+                    # execute the tester by its relative path from data directory
+                    run_cmd=(python3 "$repo/$exbase/$pybase")
+
+                # ex01 expects a single country argument
+                elif [ "$exbase" = "ex01" ]; then
+                    # Ensure the expected CSV exists next to aff_life.py by creating
+                    # a temporary symlink into the exercise directory pointing to
+                    # the repo data file. We remove it after running.
+                    link="$repo/$exbase/life_expectancy_years.csv"
+                    target="$repo/data/life_expectancy_years.csv"
+                    if [ ! -f "$link" ] && [ -f "$target" ]; then
+                        ln -s "$target" "$link" || true
+                        cleanup_link=true
                     else
-                        python3 "$(basename "$py")"
+                        cleanup_link=false
                     fi
+                    run_cmd=(python3 "$pybase" "France")
+
+                # ex02 expects two country args
+                elif [ "$exbase" = "ex02" ]; then
+                    # ex02 requires population_total.csv under repo/data. If the
+                    # CSV is missing or broken, skip this exercise to avoid
+                    # spurious failures in the batch runner.
+                    poppath="$repo/data/population_total.csv"
+                    if [ ! -f "$poppath" ]; then
+                        echo "[skip] population_total.csv not found; skipping ex02"
+                        exit 0
+                    fi
+                    run_cmd=(python3 "$pybase" "France" "Germany")
+
+                # ex03 expects a year argument; pass --save so headless runs succeed
+                elif [ "$exbase" = "ex03" ]; then
+                    out="$repo/${exbase}_2019_cli.png"
+                    run_cmd=(python3 "$pybase" "2019" "--save" "$out")
+
+                # ex05 still needs the long TEST_ARG
+                elif [ "$exbase" = "ex05" ]; then
+                    run_cmd=(python3 "$pybase" "$TEST_ARG")
+
                 else
-                    if [ "$(basename "$ex")" = "ex05" ]; then
-                        python "$(basename "$py")" "$TEST_ARG"
-                    else
-                        python "$(basename "$py")"
+                    # generic runner: use python3 without extra args
+                    run_cmd=(python3 "$pybase")
+                fi
+
+                # If python3 is unavailable, fall back to python
+                if ! command -v python3 >/dev/null 2>&1; then
+                    # replace command with python where necessary
+                    if [ "${run_cmd[0]}" = "python3" ]; then
+                        run_cmd=(python "${run_cmd[@]:1}")
                     fi
+                fi
+
+                # Run the prepared command from the chosen working directory
+                cd "$run_cwd"
+                "${run_cmd[@]}"
+
+                # Cleanup any temporary symlink created for ex01
+                if [ "${cleanup_link:-false}" = true ]; then
+                    rm -f "$repo/$exbase/life_expectancy_years.csv" || true
                 fi
             ) || echo "[error] script $py exited with code $?"
             ran=true
