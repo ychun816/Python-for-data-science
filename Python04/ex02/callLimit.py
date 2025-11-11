@@ -33,7 +33,8 @@ def callLimit(
             if count < limit:
                 count += 1
                 return function(*args, **kwds)
-            print(f"Error: {function} call too many times!")
+            # Match subject output: no trailing punctuation after the message
+            print(f"Error: {function} call too many times")
 
         return limit_function
 
