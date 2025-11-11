@@ -1,0 +1,22 @@
+#ex00
+pandas == 2.2.3
+
+#ex01
+matplotlib==3.9.2
+numpy==2.1.2
+pandas==2.2.3
+pytest==8.3.3
+seaborn==0.13.2
+
+#ex02
+matplotlib==3.9.2
+numpy==2.1.2
+pandas==2.2.3
+pytest==8.3.3
+seaborn==0.13.2
+
+#ex03
+matplotlib==3.9.2
+pandas==2.2.3
+pytest==8.3.3
+seaborn==0.13.2
