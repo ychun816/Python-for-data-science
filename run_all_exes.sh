@@ -69,10 +69,19 @@ for repo_name in "${REPOS[@]}"; do
         printf "%b\n" "${BOLD}${CYAN}Exercise: $(basename "$ex")${RESET}"
         printf "%b\n" "${BOLD}${BABY_BLUE}----------------------------------------------------------------${RESET}"
     ran=false
+            exbase=$(basename "$ex")
             for py in "$ex"/*.py; do
+                        # Skip ex03/__main__.py because it does not accept the
+                        # -y/-o args used by the batch runner; run
+                        # projection_life.py instead.
+                        if [ "$exbase" = "ex03" ] && [ "$(basename "$py")" = "__main__.py" ]; then
+                            continue
+                        fi
                 # Run files that contain a main guard, or runner/test files named
                 # `tester.py` (some exercises use a tester script without a guard).
-                if grep -q "__name__ *== *['\"]__main__['\"]" "$py" || [ "$(basename "$py")" = "tester.py" ]; then
+                # Special-case ex03: only run projection_life.py (avoid __main__.py
+                # argument mismatch). We still allow tester.py normally.
+                if grep -q "__name__ *== *['\"]__main__['\"]" "$py" || [ "$(basename "$py")" = "tester.py" ] || { [ "$exbase" = "ex03" ] && [ "$(basename "$py")" = "projection_life.py" ]; }; then
                 echo
                 printf "%b\n" "${GREEN}--- Running: $py ---${RESET}"
             # run in a subshell so it doesn't affect this script's environment
@@ -120,8 +129,9 @@ for repo_name in "${REPOS[@]}"; do
 
                 # ex03 expects a year argument; pass --save so headless runs succeed
                 elif [ "$exbase" = "ex03" ]; then
+                    # projection_life.py expects -y/--year and -o/--output
                     out="$repo/${exbase}_2019_cli.png"
-                    run_cmd=(python3 "$pybase" "2019" "--save" "$out")
+                    run_cmd=(python3 "$pybase" "-y" "2019" "-o" "$out")
 
                 # ex05 still needs the long TEST_ARG
                 elif [ "$exbase" = "ex05" ]; then
