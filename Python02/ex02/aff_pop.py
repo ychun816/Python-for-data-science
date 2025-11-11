@@ -24,6 +24,11 @@ def population_total(country: str, compare_country: str) -> None:
     if df is None:
         raise RuntimeError(f"Could not load data from {path}")
 
+    # If the loader returns a DatasetView (preview wrapper), extract the
+    # underlying pandas DataFrame to allow column indexing.
+    if hasattr(df, 'raw'):
+        df = df.raw()
+
     # 2) Validate inputs
     countries = [country, compare_country]
     missing = [c for c in countries if c not in df["country"].values]
@@ -117,5 +122,19 @@ def population_total(country: str, compare_country: str) -> None:
     )
     outpath = os.path.join(os.path.dirname(__file__), fname)
     plt.savefig(outpath, bbox_inches="tight")
-    print("Saved plot to", outpath)
+    # print("Saved plot to", outpath)
     plt.close()
+
+
+if __name__ == "__main__":
+    # Minimal CLI: `python aff_pop.py [country] [compare_country]`
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Compare population for two countries (1800-2050)"
+    )
+    parser.add_argument("country", nargs="?", default="France")
+    parser.add_argument("compare", nargs="?", default="Belgium")
+    args = parser.parse_args()
+
+    population_total(args.country, args.compare)
