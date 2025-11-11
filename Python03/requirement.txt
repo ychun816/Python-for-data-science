@@ -1,0 +1,16 @@
+# Requirements for Python03 exercises (ex00 — ex04)
+#
+# These exercises use only the Python standard library. No third-party
+# packages are required to run the example scripts in this folder.
+#
+# If you want to enforce a Python minimum version for typing features
+# (e.g., builtin generic types like list[float]) use Python 3.9+.
+
+python>=3.9
+
+# Per-exercise notes:
+# ex00: uses 'abc' from the standard library — no external packages
+# ex01: uses 'abc' from the standard library — no external packages
+# ex02: multiple-inheritance demonstration — standard library only
+# ex03: simple calculator class, no external packages
+# ex04: staticvector utilities, no external packages
