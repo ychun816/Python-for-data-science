@@ -4,7 +4,9 @@ from abc import ABC, abstractmethod
 
 
 class Character(ABC):
-    """Abstract base class representing a generic character in a story.
+    """Character class — abstract base for characters in a story.
+
+    Class: Character
 
     Attributes:
         first_name (str): The first name of the character.
@@ -12,7 +14,9 @@ class Character(ABC):
     """
 
     def __init__(self, first_name: str, is_alive: bool = True):
-        """Initialize a Character with a first name and optional alive state.
+        """Constructor for Character.
+
+        Initialize a Character with a first name and optional alive state.
 
         Args:
             first_name (str): Name of the character.
@@ -23,15 +27,20 @@ class Character(ABC):
 
     @abstractmethod
     def die(self):
-        """Set the character's state to not alive (False)."""
+        """Method die(): set the character's state to not alive (False)."""
         pass
 
 
 class Stark(Character):
-    """A Stark character, inheriting from Character."""
+    """Stark class — a specific Character implementation.
+
+    Class: Stark
+    """
 
     def __init__(self, first_name: str, is_alive: bool = True):
-        """Initialize a Stark character with first name and alive state.
+        """Constructor for Stark.
+
+        Initialize a Stark character with first name and alive state.
 
         Args:
             first_name (str): Name of the Stark character.
@@ -40,7 +49,11 @@ class Stark(Character):
         super().__init__(first_name, is_alive)
 
     def die(self):
-        """Set the Stark character's state to not alive (False)."""
+        """Method die(): set the Stark character's state to not alive.
+
+        This implements the abstract `die` method from `Character` and
+        sets ``is_alive`` to ``False``.
+        """
         try:
             if getattr(self, "is_alive", False):
                 self.is_alive = False
