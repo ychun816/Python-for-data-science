@@ -31,16 +31,9 @@ def ft_statistics(*args: Any, **kwargs: Any) -> None:
             print(f"WARNING: Ignoring non-numeric value '{a}'")
 
     if not nbs:
-        # The tester prints a separator ("-----") immediately before calling
-        # this function. To match the subject's expected formatting we move
-        # the cursor up one line and overwrite that separator with
-        # "----- " (separator plus trailing space), then print the three
-        # ERROR lines on the following lines. This reproduces the exact
-        # visual layout required by the subject when run in a terminal.
-        print("\x1b[1A", end="")
-        print("----- ")
+        # The tester expects an ERROR block when no numbers are provided.
         print("ERROR")
-        print("ERROR ")
+        print("ERROR")
         print("ERROR")
         return
 
@@ -85,6 +78,5 @@ def ft_statistics(*args: Any, **kwargs: Any) -> None:
             func = stat_map[stat_name]
             result = func(nbs)
             print(f"{stat_name} : {result}")
-    # If an unknown stat is requested, silently ignore it.
-    # This matches the tester's expected output (no warnings for unknown
-    # kwargs).
+        else:
+            print(f"WARNING: Unknown stat '{stat_name}'")
