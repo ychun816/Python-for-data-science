@@ -40,6 +40,9 @@
 ---
 
 ## ex00
+Notes for this exercise
+----------------------
+
 
 Formulas
 | Statistic | Formula / Method                         |
@@ -79,21 +82,15 @@ Formulas
                    v
             Print results
                    |
-                   v
                End function
 
 ```
 1. Input numbers and kwargs enter ft_statistics.
-2. Non-numeric values are filtered out.
-3. The remaining numbers are sorted for median/quartile.
 4. Each requested statistic in kwargs is calculated using the mapped helper function.
 5. Results are printed.
 
 
 ## **1️⃣ Summary Table – Python Ex00 Functions & Syntax**
-
-| Function / Syntax                                                               | English Description                            | 中文解釋                 | Example / Notes                                        |
-| ------------------------------------------------------------------------------- | ---------------------------------------------- | -------------------- | ------------------------------------------------------ |
 | `mean(nums)`                                                                    | Average of numbers                             | 平均數 / 平均值            | Add all numbers, divide by count                       |
 | `median(nums)`                                                                  | Middle value after sorting                     | 中位數                  | If odd: pick middle; even: average two middle          |
 | `quartile(nums)`                                                                | 25% (Q1) & 75% (Q3) positions                  | 四分位數                 | Q1 = n//4 index, Q3 = 3n//4 index                      |
@@ -154,7 +151,6 @@ Std Dev ≈ 1.632
 ```
 
 
-This shows **step by step** how each number flows through the calculations:
 
 * Numbers → Mean → Median → Quartiles → Variance → Std Dev
 * Bubble sort, indexing, squaring, summing, and square root are all applied manually.
@@ -171,6 +167,29 @@ This shows **step by step** how each number flows through the calculations:
 
 1. `inner()` is the actual callable returned by `outer()`.
 2. No globals allowed, so we must use `closures` (nonlocal keyword) to store state.
+
+Notes for this exercise
+----------------------
+
+- Implementation details: `square(x)` returns x * x. `pow(x)` returns x ** x.
+- `outer(x, function)` returns a closure that stores an internal `current`
+   value initialized to `x`. Each call to the returned `inner()` applies the
+   provided `function` to the previous `current` value, updates `current`, and
+   returns the new value. This matches the exercise expectation where each
+   subsequent call applies the function to the previous result (not to x with
+   an increasing exponent).
+- No global variables are used; `nonlocal` is used to maintain closure state.
+- Style: the module passes `flake8` checks in this environment.
+
+Example behavior (from `tester.py`):
+
+```
+my_counter = outer(3, square)        # returns closure
+my_counter() -> square(3) -> 9
+my_counter() -> square(9) -> 81
+my_counter() -> square(81) -> 6561
+```
+
 
 
 | Function / Concept | English                 | 中文解釋              |
@@ -354,6 +373,15 @@ Step-by-step breakdown
 | 1️⃣   | `callLimit(limit)`              | outer function — stores the `limit` value           | returns `callLimiter`                          |
 | 2️⃣   | `callLimiter(function)`         | inner function — gets the function to decorate      | returns `limit_function`                       |
 | 3️⃣   | `limit_function(*args, **kwds)` | wrapper — controls how many times the function runs | returns result of `function()` or prints error |
+- `callLimit(limit)` is a decorator factory: it returns a decorator which,
+   when applied to a function, returns a wrapper that allows the function to
+   run `limit` times. Subsequent calls print an error message and the original
+   function is not executed.
+- The implementation uses a `nonlocal` counter in the closure returned by
+   `callLimit(limit)` so each decorated function keeps its own call count.
+- Error message formatting matches the subject: "Error: <function ...> call too many times".
+- No global variables are used; the state is kept in the closure.
+
 
 Workflow Diagram
 ```
@@ -578,6 +606,63 @@ Memory updated for student object:
 └─ id='trannxhndgtolvh'       │
 └─────────────────────────────┘
 ```
+
+Notes for this exercise
+----------------------
+
+Implementation summary
+- Prototype (core parts):
+
+```python
+import random
+import string
+from dataclasses import dataclass, field
+
+def generate_id() -> str:
+      return "".join(random.choices(string.ascii_lowercase, k=15))
+
+@dataclass
+class Student:
+      name: str
+      surname: str
+      active: bool = True
+      login: str = field(init=False)
+      id: str = field(init=False)
+
+      def __post_init__(self):
+            # set login and id here
+            ...
+```
+
+- Login rule: the login is created by taking the first letter of `name`,
+   uppercasing it, and concatenating the full `surname` (example: name="Edward",
+   surname="agle" → login="Eagle"). This exact rule is implemented in
+   `__post_init__`.
+- ID generation: `generate_id()` returns a random 15-letter lowercase string
+   using `random.choices(string.ascii_lowercase, k=15)`.
+- `login` and `id` are declared with `field(init=False)`, so they are not
+   arguments of the generated `__init__` and attempts to pass them (for
+   example `Student(..., id='toto')`) raise a `TypeError`.
+- No custom `__repr__` / `__str__` methods are provided; the dataclass's
+   default representation is used by `print(student)` and matches the
+   exercise output format.
+- Only the allowed standard modules are used: `dataclasses`, `random`, and
+   `string`.
+
+Tester note
+- The exercise tester now creates a Student and prints it:
+
+```python
+student = Student(name="Edward", surname="agle")
+print(student)
+```
+
+This prints a line similar to:
+`Student(name='Edward', surname='agle', active=True, login='Eagle', id='<random>')`
+
+Linting
+- The module passes `flake8` in this environment.
+
 
 ---
 
