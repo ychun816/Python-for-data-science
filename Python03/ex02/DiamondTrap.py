@@ -9,27 +9,32 @@ class King(Baratheon, Lannister):
     def __init__(self, first_name: str, is_alive: bool = True):
         """Initialize King Joffrey with mixed family traits."""
         super().__init__(first_name, is_alive)
+        # Do not create private attributes here; rely on the public
+        # attributes (`eyes`, `hairs`) that the parent constructors set.
+        # Property getters/setters below operate on the public keys so the
+        # object's `__dict__` matches the expected shape.
 
     # ---- Using @property ----
     @property
     def eyes(self):
         """Return current eye color."""
-        return self._eyes
+        return self.__dict__.get("eyes")
 
     @eyes.setter
     def eyes(self, color):
         """Set eye color safely."""
-        self._eyes = color
+        # Update the public attribute so __dict__ reflects the change.
+        self.__dict__["eyes"] = color
 
     @property
     def hairs(self):
         """Return current hair color."""
-        return self._hairs
+        return self.__dict__.get("hairs")
 
     @hairs.setter
     def hairs(self, color):
         """Set hair color safely."""
-        self._hairs = color
+        self.__dict__["hairs"] = color
 
     # ---- Extra getter/setter for backward compatibility ----
     def set_eyes(self, color):

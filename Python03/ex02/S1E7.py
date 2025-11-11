@@ -23,6 +23,10 @@ class Baratheon(Character):
         """Return a developer-readable representation of the object."""
         return f"<Character: {self.first_name} {self.family_name}>"
 
+    def die(self):
+        """Method die(): mark this Baratheon as not alive."""
+        self.is_alive = False
+
     @classmethod
     def create(cls, first_name, is_alive=True):
         """Class method to create a new Baratheon instance."""
@@ -46,6 +50,10 @@ class Lannister(Character):
     def __repr__(self):
         """Return a developer-readable representation of the object."""
         return f"<Character: {self.first_name} {self.family_name}>"
+
+    def die(self):
+        """Method die(): mark this Lannister as not alive."""
+        self.is_alive = False
 
     @classmethod
     def create(cls, first_name, is_alive=True):
