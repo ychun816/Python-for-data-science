@@ -1,13 +1,24 @@
 # Python 
 
-### Tutorial vids
+## Table of Contents
+
+- [Tutorial videos](#tutorial-vids)
+- [Documentation](#documentation)
+- [Python00 (Basics)](Python00/README.md)
+- [Python01 (Exercises)](Python01/README.md)
+- [Python02 (Data & CSV)](Python02/README.md)
+- [Python03 (OOP)](Python03/README.md)
+- [Python04 (Functions & Decorators)](Python04/README.md)
+---
+
+## Tutorial videos
 - Python for Beginners – Full Course [Programming Tutorial]
 https://www.youtube.com/watch?v=eWRfhZUzrAc
 
 - Python Tutorial for Beginners - Learn Python in 5 Hours [FULL COURSE]
 https://www.youtube.com/watch?v=t8pPdKYpowI
 
-### Documentation
+## Documentation
 - Python Standard Library
 https://docs.python.org/3/library/
 
@@ -17,9 +28,9 @@ https://www.w3schools.com/python/
 - Beginner's Guide to Python
 https://wiki.python.org/moin/BeginnersGuide
 
+---
 
-
-## Python 00
+## 0️⃣ Python00
 ### Basic Types
 Python has a few basic built-in data types that are **super important**:
 - **List** 📋  
@@ -114,8 +125,6 @@ Ordered since Python 3.7 (insertion order kept).
 
 > ℹ️ *Dictionaries keep insertion order in Python 3.7+ (so order is predictable now).
 
-
-
 ### Common Built-in Exceptions (Python predefined errors)**
 
 ```
@@ -143,8 +152,9 @@ Ordered since Python 3.7 (insertion order kept).
 - Python Package setup :
 https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkA5azaall
 
+---
 
-## Python 01
+## 1️⃣ Python01
 ### libraries
 - numbPy explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkWhZSaaxx
 - PIL(Pillow) explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/r1b6q_C6eg
@@ -152,14 +162,9 @@ https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkA5azaall
 
 ### Concept Correcting
 
-非常好 🌟 這是學習專業 Python 開發的重要一步。
-以下我會用 **英文 + 繁體中文對照** 詳細說明每個重點。
+#### 🧱 1️⃣ “No code in the global scope”
 
----
-
-## 🧱 1️⃣ “No code in the global scope”
-
-### 🔹 English
+##### 🔹 English
 
 You should **not execute code** directly in the file’s top level (global scope).
 Only define functions or classes there.
@@ -185,7 +190,7 @@ if __name__ == "__main__":
 print("Hello!")  # runs immediately when imported
 ```
 
-### 🔹 中文（繁體）
+##### 🔹 中文（繁體）
 
 不要在「全域範圍（global scope）」直接執行程式。
 只能在這裡**定義函式或類別**。
@@ -194,9 +199,9 @@ print("Hello!")  # runs immediately when imported
 
 ---
 
-## ⚙️ 2️⃣ `if __name__ == "__main__":`
+#### ⚙️ 2️⃣ `if __name__ == "__main__":`
 
-### 🔹 English
+##### 🔹 English
 
 * Every Python file has a built-in variable `__name__`.
 * When the file is **run directly**, Python sets `__name__ = "__main__"`.
@@ -215,7 +220,7 @@ if __name__ == "__main__":
 * Run directly → will print
 * Import → will not print
 
-### 🔹 中文（繁體）
+##### 🔹 中文（繁體）
 
 每個 Python 檔案都有內建變數 `__name__`。
 
@@ -226,9 +231,9 @@ if __name__ == "__main__":
 
 ---
 
-## ⚡ 3️⃣ “Any exception not caught will invalidate the exercise”
+#### ⚡ 3️⃣ “Any exception not caught will invalidate the exercise”
 
-### 🔹 English
+##### 🔹 English
 
 You must handle errors with `try/except`.
 If a runtime error happens and is not caught → ❌ exercise invalid.
@@ -244,16 +249,16 @@ def divide(a, b):
         return None
 ```
 
-### 🔹 中文（繁體）
+##### 🔹 中文（繁體）
 
 必須用 `try / except` 處理例外（error）。
 如果執行時發生錯誤但沒有被捕捉 → 作業算無效。
 
 ---
 
-## 📖 4️⃣ “All your functions must have a documentation (**doc**)”
+#### 📖 4️⃣ “All your functions must have a documentation (**doc**)”
 
-### 🔹 English
+###### 🔹 English
 
 `__doc__` is the **docstring** (文字文件註解) of your function.
 It explains what the function does, its parameters, and its return value.
@@ -276,7 +281,7 @@ def add(a, b):
 print(add.__doc__)
 ```
 
-### 🔹 中文（繁體）
+###### 🔹 中文（繁體）
 
 `__doc__` 是 Python 函式的**文件字串（docstring）**。
 用來說明：
@@ -289,9 +294,9 @@ print(add.__doc__)
 
 ---
 
-## 🧰 5️⃣ Flake8 — the “norm” checker
+#### 🧰 5️⃣ Flake8 — the “norm” checker
 
-### 🔹 English
+##### 🔹 English
 
 `flake8` is a **style and syntax checker**.
 It ensures your code follows the official **Python coding standard (PEP 8)**.
@@ -312,7 +317,7 @@ It checks:
 * Unused imports
 * Code in global scope (forbidden)
 
-### 🔹 中文（繁體）
+##### 🔹 中文（繁體）
 
 `flake8` 是一個 **Python 程式規範檢查工具**。
 會自動幫你檢查程式是否符合 Python 標準（PEP8）。
@@ -327,7 +332,7 @@ It checks:
 
 ---
 
-## 🧠 Special Variables Explained
+#### 🧠 Special Variables Explained
 
 | Name       | English Explanation                                      | 中文解釋                         |
 | ---------- | -------------------------------------------------------- | ---------------------------- |
@@ -335,9 +340,8 @@ It checks:
 | `__main__` | The name Python assigns to the top-level script          | Python 對主程式檔案給的名稱            |
 | `__doc__`  | String containing the function’s documentation           | 函式或模組的文件字串（說明文字）             |
 
----
 
-## 🧭 Summary Table
+#### 🧭 Summary Table
 
 | Concept        | Rule                                       | Example                           | 中文說明               |
 | -------------- | ------------------------------------------ | --------------------------------- | ------------------ |
@@ -349,7 +353,7 @@ It checks:
 
 ---
 
-## 🧩 1️⃣ Yes — Python *can* run code globally
+#### 🧩 Python *can* run code globally
 
 ✅ **Fact:**
 In Python, when you write code directly in the file (outside any function or class), it will **run immediately** when the file is executed or imported.
@@ -389,7 +393,7 @@ That means — **global code always runs**, even if you just import the file!
 
 ---
 
-## 🚫 Why the subject forbids global code
+#### 🚫 Why the subject forbids global code
 
 Because when someone imports your file (for testing or reuse),
 you **don’t want your code to execute automatically** — it should only run when you *explicitly* tell it to.
@@ -408,7 +412,7 @@ if __name__ == "__main__":
 
 ---
 
-## ⚙️ 2️⃣ How `__name__` and `"__main__"` work
+#### ⚙️ 2️⃣ How `__name__` and `"__main__"` work
 
 Python automatically sets a special variable:
 
@@ -425,7 +429,7 @@ means “run the next block **only when this file is executed directly**”.
 
 ---
 
-## 🧠 English Explanation Summary
+#### 🧠 English Explanation Summary
 
 | Situation                            | `__name__` value | Code under `if __name__ == "__main__":` runs? |
 | ------------------------------------ | ---------------- | --------------------------------------------- |
@@ -434,9 +438,9 @@ means “run the next block **only when this file is executed directly**”.
 
 ---
 
-## 🇹🇼 中文（繁體）
+###### 🇹🇼 中文（繁體）
 
-### ✅ Python 可以在全域範圍執行程式碼
+#### ✅ Python 可以在全域範圍執行程式碼
 
 當你在檔案最外層（非函式或類別中）寫程式碼時，
 它會 **立即被執行**，無論是直接執行或是被匯入。
@@ -470,7 +474,7 @@ import hello
 
 ---
 
-### 🚫 為什麼題目要求不要用全域程式碼？
+#### 🚫 為什麼題目要求不要用全域程式碼？
 
 因為如果別的程式或測試檔匯入你的模組，
 它就會「不小心」執行到你的程式。
@@ -481,6 +485,56 @@ import hello
 if __name__ == "__main__":
     main()
 ```
+
+## Exercise learner notes (moved from exercise source files)
+
+These concise learner notes were moved from inline comment blocks in
+the exercise source files into this central location. They summarize
+the important libraries, Python idioms, and behaviors used in each
+exercise so you can quickly review them while working through the
+materials.
+
+ex00 — BMI utilities (ex00/give_bmi.py)
+- Uses the standard library only (``sys`` for CLI integration).
+- Concepts: type hints (``list[int | float]``), list comprehensions,
+    ``zip`` to pair corresponding items, ``isinstance`` checks and
+    explicit ``raise`` for input validation, and the ``if __name__ == '__main__'``
+    guard to keep modules import-safe.
+
+ex01 — 2D array slicing (ex01/array2D.py)
+- NumPy (``import numpy as np``) provides ndarrays, fast numeric ops
+    and convenient slicing. Use ``np.array(list_of_lists)`` to convert
+    Python lists, inspect ``.ndim`` and ``.shape``, slice rows with
+    ``arr[start:end]``, and convert back to Python lists with
+    ``.tolist()`` when needed.
+
+ex02 — Image loader (ex02/load_image.py)
+- Pillow (PIL) for image I/O and NumPy for numeric arrays; ``Path``
+    from pathlib improves cross-platform path handling.
+- Patterns: ``Image.open(path)`` and ``.convert('RGB')`` to ensure
+    3-channel images; ``np.array(img)`` yields a (H, W, C) ndarray.
+    The loader uses a repository-local fallback path and returns ``None``
+    (and prints to stderr) on failure to keep demos simple.
+
+ex03 — Zoom & grayscale (ex03/zoom.py)
+- Uses NumPy for array math, Pillow for resizing (``Image.fromarray``),
+    and matplotlib for display.
+- Key syntax: ``rgb[..., :3]`` to select channels, ``np.dot`` with
+    luminance weights to convert RGB→grayscale, and ``astype(np.uint8)``
+    to cast floats to byte-range values. The code defends against ``None``
+    inputs and handles ``KeyboardInterrupt`` cleanly during display.
+
+ex04 — Crop / transpose (ex04/rotate.py)
+- Same loader pattern (Pillow + NumPy). Cropping uses array slicing to
+    extract centered squares; transposing uses ``.T`` to swap axes. For
+    color images the example converts to grayscale so the transpose is 2D.
+
+ex05 — Filters and display (ex05/pimp_image.py)
+- Demonstrates NumPy filters: inversion (``255 - arr``), channel masking
+    (``arr[:, :, 1] = 0``), and grayscale stacking.
+- Shows process helpers: module-level collection of results, ``atexit.register``
+    to display on normal exit, and SIGINT handling to close GUI windows on Ctrl+C.
+
 
 來控制只在「直接執行」時執行，不在匯入時執行。
 
@@ -503,7 +557,7 @@ if __name__ == "__main__":
 
 ---
 
-### 🧠 中文摘要表
+#### 🧠 中文摘要表
 
 | 狀況                      | `__name__` 的值 | 是否執行 `if __name__ == "__main__"` |
 | ----------------------- | ------------- | -------------------------------- |
@@ -512,9 +566,9 @@ if __name__ == "__main__":
 
 ---
 
-## 🧱 ASCII Workflow Diagram
+### 🧱 ASCII Workflow Diagram
 
-### ❌ Without `main()` — global code (bad)
+#### ❌ Without `main()` — global code (bad)
 
 ```
 ┌───────────────┐
@@ -545,7 +599,7 @@ When imported → still prints "Run!"
 
 ---
 
-## 🧩 Summary
+### 🧩 Summary
 
 | Concept         | English                                         | 中文說明                      |
 | --------------- | ----------------------------------------------- | ------------------------- |
@@ -554,19 +608,12 @@ When imported → still prints "Run!"
 | `__name__`      | Special variable = `"__main__"` if run directly | 特殊變數，直接執行時等於 `"__main__"` |
 | Rule in subject | Restrict all execution inside `main()`          | 作業要求所有執行都放在 main() 裡面     |
 
----
-
-✅ **So your understanding is correct:**
-Yes — Python *can* run code globally,
-but in this project, they require you to **delimit (限制)** all execution to run **only inside `main()`** using
-
-```python
-if __name__ == "__main__":
-    main()
-```
-
 
 ---
+
+## 2️⃣ Python02 
+## 3️⃣ Python03
+## 4️⃣ Python04
 
 
 
