@@ -31,16 +31,18 @@ def outer(
     Each call to the returned `inner()` increases an internal counter and
     applies `function(x ** count)`.
     """
-    inner_count = 0  # keep track of how many times inner is called
+    # keep an internal value that will be updated on each call
+    current = x
 
     def inner() -> float:
-        """Uses the x and inner_count from outer()
-        even after outer() finished.
+        """Apply `function` to the current value, update it and return it.
+
+        This matches the exercise requirement: each call applies the provided
+        function to the previous result (first call applies it to `x`).
         """
-        nonlocal inner_count
-        inner_count += 1
-        result = function(x ** inner_count)
-        return result
+        nonlocal current
+        current = function(current)
+        return current
 
     return inner
 
