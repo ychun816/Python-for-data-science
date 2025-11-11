@@ -17,11 +17,13 @@ class calculator:
     @staticmethod
     def add_vec(v1: list[float], v2: list[float]) -> None:
         """Add two vectors element-wise."""
-        result = [x + y for x, y in zip(v1, v2)]
-        print(f"Add Vector is: {result}")
+        # produce float results with one decimal place
+        result = [float(x + y) for x, y in zip(v1, v2)]
+        # match subject formatting (space before colon)
+        print(f"Add Vector is : {result}")
 
     @staticmethod
     def sous_vec(v1: list[float], v2: list[float]) -> None:
         """Subtract two vectors element-wise."""
-        result = [x - y for x, y in zip(v1, v2)]
+        result = [float(x - y) for x, y in zip(v1, v2)]
         print(f"Sous Vector is: {result}")
