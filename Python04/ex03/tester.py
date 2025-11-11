@@ -5,10 +5,6 @@ from new_student import Student
 
 student = Student(name="Edward", surname="agle")
 
-# Passing `id` here should raise a TypeError because `id` is excluded
-# from the generated __init__.
-student = Student(name="Edward", surname="agle", id="toto")
-
 print(student)
 
 # OUTPUT

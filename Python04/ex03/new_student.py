@@ -31,5 +31,10 @@ class Student:
     # __init__. Use it to initialize login and id so they cannot be overridden
     # by caller-supplied keyword arguments.
     def __post_init__(self):
-        self.login = self.surname.capitalize()  # capitalizes first letter
+        # Create a login from the student's name and surname. The expected
+        # format in the subject is the first letter of the name (uppercased)
+        # followed by the full surname, e.g. name='Edward', surname='agle'
+        # -> login='Eagle'. Use safe indexing in case name is empty.
+        first = self.name[0].upper() if self.name else ""
+        self.login = f"{first}{self.surname}"
         self.id = generate_id()  # random ID
