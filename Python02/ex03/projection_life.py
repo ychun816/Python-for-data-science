@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+import importlib.util
 import os
-from typing import Iterable
+from typing import Iterable, Optional
 
 import pandas as pd
 import seaborn as sns
@@ -60,8 +61,14 @@ def find_base(min_value: float, max_value: float) -> int:
     return 2000
 
 
-def render_plot(df_life_gdp: pd.DataFrame, year: str) -> None:
-    """Render scatter plot of GDP vs Life Expectancy for a given year."""
+def render_plot(
+    df_life_gdp: pd.DataFrame, year: str, save_path: Optional[str] = None
+) -> None:
+    """Render scatter plot of GDP vs Life Expectancy for a given year.
+
+    If save_path is provided the plot will be written to that file. If not,
+    the plot will be shown interactively.
+    """
     sns.set_theme()
 
     sc = sns.scatterplot(
@@ -72,9 +79,11 @@ def render_plot(df_life_gdp: pd.DataFrame, year: str) -> None:
         legend=False,
     )
 
-    plt.title(f"{year}", fontsize=15)
+    # Large, centered year-only title (matches requested style)
+    plt.title(f"{year}", fontsize=20, pad=12)
     plt.xlabel("Gross domestic product", fontsize=10)
-    plt.ylabel("Life Expectancy", fontsize=10)
+    # Use the exact Y label requested by the user
+    plt.ylabel("Life expantancy", fontsize=10)
     plt.tick_params(axis="both", labelsize=8)
 
     sc.xaxis.set_major_formatter(plt.FuncFormatter(formater))
@@ -88,16 +97,23 @@ def render_plot(df_life_gdp: pd.DataFrame, year: str) -> None:
     except Exception:
         plt.xlim(300, 10000)
 
-    # Y-axis ticks explicitly requested by the user
+    # Y-axis ticks explicitly requested by the user (20..55 step 5)
     y_ticks = [20, 25, 30, 35, 40, 45, 50, 55]
-    # Only keep ticks that fall within range
-    min_y = df_life_gdp["Life Expectancy"].min()
-    max_y = df_life_gdp["Life Expectancy"].max()
-    y_ticks = [t for t in y_ticks if min_y <= t <= max_y]
-    if y_ticks:
-        sc.yaxis.set_major_locator(plticker.FixedLocator(y_ticks))
+    sc.yaxis.set_major_locator(plticker.FixedLocator(y_ticks))
+    # Force y-limits so ticks are visible and match the requested range
+    try:
+        sc.set_ylim(min(y_ticks), max(y_ticks))
+    except Exception:
+        plt.ylim(min(y_ticks), max(y_ticks))
 
-    plt.show()
+    # Legend intentionally omitted per user request
+
+    if save_path:
+        plt.tight_layout()
+        plt.savefig(save_path, dpi=150)
+        # print(f"Saved plot to {os.path.abspath(save_path)}")
+    else:
+        plt.show()
 
 
 def _first_existing(candidates: Iterable[str]) -> str:
@@ -128,7 +144,7 @@ def _parse_gdp_value(x):
         raise ValueError(f"Unable to parse GDP value: {x}")
 
 
-def gdp_life_expectancy(year: str) -> None:
+def gdp_life_expectancy(year: str, save_path: Optional[str] = None) -> None:
     """Load CSVs, merge life expectancy and GDP for the given year."""
     abs_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -165,8 +181,41 @@ def gdp_life_expectancy(year: str) -> None:
         ),
     )
 
-    df_life = load(_first_existing(life_candidates))
-    df_gdp = load(_first_existing(gdp_candidates))
+    # Prefer the loader from ex02 if available (user request). Fall back to
+    # the local `load` imported at module level.
+    def _call_loader(csv_path: str):
+        # candidate ex02 loader location
+        ex02_loader = os.path.join(abs_path, "..", "ex02", "load_csv.py")
+        if os.path.exists(ex02_loader):
+            try:
+                spec = importlib.util.spec_from_file_location(
+                    "ex02_load_csv", ex02_loader
+                )
+                mod = importlib.util.module_from_spec(spec)
+                assert spec and spec.loader
+                spec.loader.exec_module(mod)  # type: ignore[attr-defined]
+                if hasattr(mod, "load"):
+                    return mod.load(csv_path)
+            except Exception:
+                # If anything fails, fall back to the default `load`.
+                pass
+        return load(csv_path)
+
+    df_life = _call_loader(_first_existing(life_candidates))
+    df_gdp = _call_loader(_first_existing(gdp_candidates))
+
+    # If the loader returns a preview-wrapper (DatasetView) extract raw DF
+    if hasattr(df_life, "raw"):
+        try:
+            df_life = df_life.raw()
+        except Exception:
+            # leave as-is; load() should have printed an error earlier
+            pass
+    if hasattr(df_gdp, "raw"):
+        try:
+            df_gdp = df_gdp.raw()
+        except Exception:
+            pass
 
     if df_life is None or df_gdp is None:
         raise RuntimeError("CSV data could not be loaded")
@@ -197,4 +246,34 @@ def gdp_life_expectancy(year: str) -> None:
     render_plot(
         df_merged[["Country", "Life Expectancy", "GDP"]],
         year,
+        save_path=save_path,
     )
+
+
+if __name__ == "__main__":
+    # Default to year 1900 and save to a sensible filename when run directly.
+    import argparse
+
+    p = argparse.ArgumentParser()
+    p.add_argument("-y", "--year", default="1900", help="Year to plot")
+    p.add_argument(
+        "-o",
+        "--output",
+        default=None,
+        help=(
+            "Optional path to save the plot as PNG. "
+            "If omitted the plot is shown."
+        ),
+    )
+    args = p.parse_args()
+
+    # If no output path provided, save to a sensible default instead of
+    # attempting an interactive display. This avoids silently not producing
+    # a graphic in headless environments (CI, containers, remote shells).
+    if not args.output:
+        args.output = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            f"gdp_life_{args.year}.png",
+        )
+
+    gdp_life_expectancy(args.year, save_path=args.output)
