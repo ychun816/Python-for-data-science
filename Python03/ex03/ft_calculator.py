@@ -15,20 +15,24 @@ class calculator:
     def __add__(self, scalar) -> None:
         """Add scalar to each element and print result."""
         result = [x + scalar for x in self.vector]
-        print(result)
-        return result
+        # update internal vector so operations can chain
+        self.vector = result
+        print(self.vector)
+        return self.vector
 
     def __mul__(self, scalar) -> None:
         """Multiply each element by scalar and print result."""
         result = [x * scalar for x in self.vector]
-        print(result)
-        return result
+        self.vector = result
+        print(self.vector)
+        return self.vector
 
     def __sub__(self, scalar) -> None:
         """Subtract scalar from each element and print result."""
         result = [x - scalar for x in self.vector]
-        print(result)
-        return result
+        self.vector = result
+        print(self.vector)
+        return self.vector
 
     def __truediv__(self, scalar) -> None:
         """Divide each element by scalar and print result (handle div by 0)."""
@@ -36,5 +40,6 @@ class calculator:
             print("Error: Cannot divide by zero.")
             return None
         result = [x / scalar for x in self.vector]
-        print(result)
-        return result
+        self.vector = result
+        print(self.vector)
+        return self.vector
