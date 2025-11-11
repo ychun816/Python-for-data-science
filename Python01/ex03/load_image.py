@@ -13,7 +13,6 @@ import sys
 from pathlib import Path
 
 
-
 def ft_load(path: str) -> np.ndarray | None:
     """Load an image and return an RGB NumPy array, or ``None`` on error.
 

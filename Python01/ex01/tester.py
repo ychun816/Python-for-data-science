@@ -10,7 +10,6 @@ import sys
 from array2D import slice_me
 
 
-
 def main(argv=None) -> int:
     """Run the array2D demo and print slices.
 
