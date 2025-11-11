@@ -1,0 +1,22 @@
+
+# Requirements for Python04 exercises (ex00 — ex03)
+#
+# These exercises rely only on the Python standard library. No third-party
+# packages are required to run the example scripts in this folder.
+#
+# Minimum Python version notes:
+# - Uses `dataclasses` in ex03 which is part of stdlib since Python 3.7.
+# - Uses `random.choices` which is available since Python 3.6.
+# Therefore a conservative minimum is Python 3.7.
+
+python>=3.7
+
+# Per-exercise notes:
+# ex00/statistics.py: uses `math` and typing from the standard library.
+#   - Filters and computes mean/median/quartile/var/std — no external deps.
+# ex01/in_out.py: uses `typing` and pure-Python closures — standard library only.
+# ex02/callLimit.py: decorator example using `typing` — standard library only.
+# ex03/new_student.py: uses `dataclasses`, `random`, `string` — standard library only.
+
+# If you plan to run these exercises on older interpreters, adjust the
+# `python` version pin above; otherwise no pip installations are necessary.
