@@ -19,7 +19,7 @@ life_expectancy function syntax:
 - `os.path` → manage file paths safely
 
 
-```
+
 | Function / Method / Operation                          | Library              | Usage / Purpose                                | Example / Notes                                        |
 | ------------------------------------------------------ | -------------------- | ---------------------------------------------- | ------------------------------------------------------ |
 | `os.path.dirname(__file__)`                            | os                   | Returns the directory path of the current file | Useful for building relative paths                     |
@@ -41,12 +41,9 @@ life_expectancy function syntax:
 | `plt.show()`                                           | matplotlib.pyplot    | Display the figure                             | Blocks execution until window is closed                |
 | `try … except Exception as e`                          | Python built-in      | Handle errors safely                           | Useful to catch any runtime error                      |
 | `raise RuntimeError(f"...")`                           | Python built-in      | Re-throw an error with custom message          | Keeps program robust and debuggable                    |
-```
 
 
-
-
-how CSV goes from raw file → Pandas DataFrame → cleaned / transposed → plotted with Seaborn/Matplotlib.
+How CSV goes from raw file → Pandas DataFrame → cleaned / transposed → plotted with Seaborn/Matplotlib.
 
 ```yaml
 CSV File (life_expectancy_years.csv)
@@ -113,6 +110,194 @@ Cleaned DataFrame (ready for plotting)
         v
 Line Plot (Seaborn/Matplotlib)
 ```
+
+### Concept Made Clearer
+
+####  🧩 `from typing import Optional` ?
+
+`typing` is a **standard Python module** used for **type hints** — hints that help you (and tools like IDEs or linters) understand what kind of data a variable or function expects.
+
+`Optional[T]` means:
+
+> The variable can either be of type **T** or **None**.
+
+##### Example:
+
+```python
+from typing import Optional
+
+def greet(name: Optional[str]) -> None:
+    if name is None:
+        print("Hello, stranger!")
+    else:
+        print(f"Hello, {name}!")
+```
+
+Here:
+
+* `name` can be a string (`"Alice"`)
+* or `None` (meaning no name provided)
+
+So both of these are valid:
+
+```python
+greet("Alice")   # ✅ prints "Hello, Alice!"
+greet(None)      # ✅ prints "Hello, stranger!"
+```
+
+In your code:
+
+```python
+def life_expectancy(
+    country: str,
+    save_path: Optional[str] = None,
+    ...
+)
+```
+
+→ means `save_path` might be a string (like `"plot.png"`) **or** `None` (meaning: don’t save to file — show the plot on screen instead).
+
+---
+
+#### 🧩  Why need `_import_ex00_loader()` ?
+
+Normally, we’d just import a function like this:
+
+```python
+from ex00.load_csv import load
+```
+
+But here’s the problem:
+
+* The loader file (`ex00/load_csv.py`) may **not exist yet**, depending on how the project is structured.
+* Importing it directly at the **top level** would cause **file I/O or ImportError** immediately when the module loads — even if you’re not calling it yet.
+
+That’s risky because:
+
+* Imports should be lightweight (no heavy disk access or computation).
+* You only want to run I/O **when you actually call** the function.
+
+So the author built `_import_ex00_loader()` to **delay** importing the `load()` function until runtime — when it’s really needed.
+
+---
+
+##### 🔁 What happens visually (ASCII Diagram)
+
+```
++----------------------------------------------------------+
+| main script (life_expectancy.py)                         |
+|                                                          |
+|   when Python imports this file:                         |
+|     - NO CSV is loaded yet                               |
+|     - NO file is opened                                  |
+|                                                          |
+|   later, when life_expectancy() runs:                    |
+|                                                          |
+|   ┌────────────────────────────┐                         |
+|   │ calls _import_ex00_loader()│                         |
+|   └──────────────┬─────────────┘                         |
+|                  │                                       |
+|                  ▼                                       |
+|        _import_ex00_loader() function                    |
+|        checks:                                           |
+|          • Is ex00/load_csv.py file present?             |
+|            → Yes → load it dynamically using importlib   |
+|          • If not, try local load_csv.py instead         |
+|                                                          |
+|   returns: load function handle (module.load)            |
+|                                                          |
+|   life_expectancy() then calls:                          |
+|       data = loader("life_expectancy_years.csv")         |
+|                                                          |
++----------------------------------------------------------+
+```
+
+👉 This ensures that **no heavy code runs until you actually call** `life_expectancy()`.
+
+---
+
+#### 🧱 DatasetView and `.raw()` method
+
+Now, this part refers to how data is *wrapped* or *encapsulated* by another object.
+
+##### Step-by-step idea:
+
+* The `ex00/load_csv.py` loader doesn’t return a plain pandas DataFrame.
+* Instead, it returns a special object called `DatasetView`, which is a *wrapper* around a DataFrame.
+
+So you have this situation:
+
+```
+┌────────────────────────────-─┐
+│ DatasetView object           │
+│ ───────────────────────────  │
+│ contains:                    │
+│   self._df = pandas.DataFrame│
+│                              │
+│ and methods:                 │
+│   .raw() → returns self._df  │
+│   .__repr__() → preview text │
+└───────────────────────────-──┘
+```
+
+This lets you **print** a short preview instead of a huge table:
+
+```python
+v = load("data.csv")
+print(v)
+# Loading dataset of dimensions (200, 10)
+# country year ... population
+# France 1950 ... 42.5
+```
+
+But if you actually want to work with the raw pandas data:
+
+```python
+df = v.raw()
+print(df.head())  # Full DataFrame
+```
+
+---
+
+#### 🧩 So this check makes sense:
+
+```python
+if hasattr(data, 'raw'):
+    df = data.raw()  # unwrap to get real DataFrame
+else:
+    df = data        # if it's already a DataFrame, use it
+```
+
+#### 🧠 ASCII Visualization:
+
+```
+Case 1: Loader returns DatasetView
+----------------------------------
+data ──▶ DatasetView
+          └──▶ _df (pandas.DataFrame)
+                ↑
+                └── accessed by .raw()
+
+
+Case 2: Loader returns DataFrame directly
+-----------------------------------------
+data ──▶ pandas.DataFrame  (no wrapper, no .raw() needed)
+```
+
+So your code safely handles **both cases** without error.
+
+---
+
+#### 🧭 Summary
+
+| Concept                  | Meaning                                         | Why it’s used                                      |
+| ------------------------ | ----------------------------------------------- | -------------------------------------------------- |
+| `Optional`               | A variable may be of a certain type **or None** | Makes functions flexible (optional args)           |
+| `_import_ex00_loader()`  | A helper that **imports `load()` at runtime**   | Avoids errors and bad practice (I/O on import)     |
+| `DatasetView` + `.raw()` | Wrapper around pandas DataFrame                 | Gives nice printing but keeps real data accessible |
+
+---
+
 
 ## ex02
 

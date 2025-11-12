@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import os  # For working with file and directory paths
-from load_csv import load  # local loader in ex01
 import seaborn as sns  # For statistical data visualization
 from matplotlib import pyplot as plt  # For creating plots and figures
 from matplotlib import ticker as plticker  # For controlling axis ticks
 from typing import Optional  # For optional type hints
+
+from load_csv import load
 
 
 # Note: we use the local `load_csv.load` from ex01 directly. That loader
