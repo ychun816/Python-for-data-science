@@ -1,43 +1,21 @@
 #!/usr/bin/env python3
 
-import os
-import importlib.util
-import seaborn as sns
-from matplotlib import pyplot as plt
-from matplotlib import ticker as plticker
-from typing import Optional
+import os  # For working with file and directory paths
+from load_csv import load  # local loader in ex01
+import seaborn as sns  # For statistical data visualization
+from matplotlib import pyplot as plt  # For creating plots and figures
+from matplotlib import ticker as plticker  # For controlling axis ticks
+from typing import Optional  # For optional type hints
 
 
-def _import_ex00_loader():
-    """Dynamically import the `load` function from ex00/load_csv.py.
+# Note: we use the local `load_csv.load` from ex01 directly. That loader
+# already knows how to resolve files in ../data and the exercise layout.
 
-    Falls back to the local `load_csv` in this package if the ex00
-    module cannot be found.
-    """
-    here = os.path.dirname(__file__)
-    ex00_path = os.path.normpath(
-        os.path.join(here, '..', 'ex00', 'load_csv.py')
-    )
-    if os.path.exists(ex00_path):
-        spec = importlib.util.spec_from_file_location(
-            'ex00_load_csv', ex00_path
-        )
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module.load
-
-    # fallback: try local load_csv.py
-    try:
-        from load_csv import load as _local_load
-
-        return _local_load
-    except Exception:
-        msg = (
-            'Could not import a suitable load function from ex00 '
-            'or local file.'
-        )
-        raise ImportError(msg)
-
+# -----------------------------------------------------------
+# Note: we don’t import the loader immediately at the top level.
+# Doing so could execute file I/O during import, which is bad practice.
+# Instead, we call `_import_ex00_loader()` later at runtime when needed.
+# -----------------------------------------------------------
 
 # Do not import the ex00 loader at module import time. Obtaining the
 # loader at import time can perform I/O and raise during import which
@@ -56,90 +34,134 @@ def life_expectancy(
 ) -> None:
     """
     Plot life expectancy for a given country from CSV data.
+
+    Parameters
+    ----------
+    country : str
+        Name of the country to plot.
+    save_path : str, optional
+        Path to save the resulting plot (PNG file).
+    xticks, yticks : list, optional
+        Custom tick values for X and Y axes.
+    xlabel : str, optional
+        Custom label for X-axis.
+    show_year_label : bool
+        Whether to display the 'Year' label on the X-axis.
+    year_label_pad : int
+        Padding distance between axis and label.
     """
 
+    # Build the path to the CSV file (life_expectancy_years.csv)
     csv_path = os.path.join(
-        os.path.dirname(__file__),
+        os.path.dirname(__file__),  # current directory
         'life_expectancy_years.csv',
     )
-    # Use the basename so the ex00 loader can resolve the file from
-    # the shared ../data directory when called from the exercises.
-    loader = _import_ex00_loader()
-    data = loader(os.path.basename(csv_path))
 
+    # Use the local loader (ex01/load_csv.py). It will search sensible
+    # candidate locations (including ../data) when given a basename.
+    data = load(os.path.basename(csv_path))
+
+    # If loader failed to load data, raise error
     if data is None:
         raise ValueError(f"Country '{country}' not found in dataset.")
 
-    # `ex00`'s loader returns a DatasetView (which proxies attributes but
-    # doesn't implement __getitem__). Extract the raw DataFrame when
-    # present so we can index by column name regardless of loader.
+    # ex00’s loader returns a DatasetView object that wraps a DataFrame.
+    # It has a `.raw()` method to access the actual pandas DataFrame.
+    # If the loader returns a plain DataFrame, we use it directly.
     if hasattr(data, 'raw'):
         df = data.raw()
     else:
         df = data
 
+    # Check if the specified country exists in the dataset
     if country not in df['country'].values:
         raise ValueError(f"Country '{country}' not found in dataset.")
 
+    # Filter rows for the chosen country and drop the 'country' column
+    # Then transpose so that years become rows instead of columns
     country_data = df[df['country'] == country].drop(columns='country').T
+
+    # Rename the single column to 'Life Expectancy'
     country_data.columns = ['Life Expectancy']
-    # Ensure the index becomes a 'Year' column after reset_index.
-    # Some loaders may not name the index, so normalize the column name
-    # produced by reset_index to 'Year'.
+
+    # Reset the index (years) to become a proper column named 'Year'
     country_data.reset_index(inplace=True)
+
+    # If the first column is not called 'Year', rename it
     if country_data.columns[0] != 'Year':
         country_data.rename(
             columns={country_data.columns[0]: 'Year'}, inplace=True
         )
 
+    # Ensure that the 'Year' column is integer type
     country_data['Year'] = country_data['Year'].astype(int)
+
+    # Ensure 'Life Expectancy' values are floats
     _col = 'Life Expectancy'
     country_data[_col] = country_data[_col].astype(float)
 
+    # -----------------------------------------------------------
+    # Plotting Part
+    # -----------------------------------------------------------
+
+    # Use seaborn’s default aesthetic theme
     sns.set_theme()
-    # label the plotted line so a legend can be shown
+
+    # Create a line plot of life expectancy over years
     ax = sns.lineplot(
         data=country_data,
         x='Year',
         y='Life Expectancy',
-        label='Life Expectancy',
+        label='Life Expectancy',  # Label for legend
     )
+
+    # Add a descriptive title to the plot
     ax.set_title(f"{country} Life Expectancy Projections")
-    # axis labels required by the exercise (allow overrides)
-    # If an explicit xlabel is provided, use it. Otherwise, optionally
-    # show the default 'Year' label and move it using labelpad so it
-    # sits lower than usual (the user asked to "move x-axis label").
+
+    # Handle X-axis label visibility and positioning
     if xlabel:
         ax.set_xlabel(xlabel)
     elif show_year_label:
+        # Show 'Year' label with custom padding (moves label down)
         ax.set_xlabel('Year', labelpad=year_label_pad)
     else:
+        # Hide X-axis label completely
         # Seaborn will auto-set axis labels from the column names. If the
-        # user requested no year label we must explicitly hide it.
         ax.xaxis.label.set_visible(False)
 
+    # Y-axis as 'Life Expectancy'
     ax.set_ylabel('Life Expectancy')
 
+    # Configure tick marks (X-axis) ##
     # set xticks/yticks if provided, otherwise use a sensible locator
     if xticks:
         ax.set_xticks(xticks)
     else:
+        # Automatically set ticks every 40 years if not provided
         ax.xaxis.set_major_locator(plticker.MultipleLocator(base=40))
 
+    # Configure tick marks (Y-axis)
     if yticks:
         ax.set_yticks(yticks)
+
     # show legend (identifies the plotted series)
     ax.legend()
-    # If a save path is provided, save the figure to a file. This makes
-    # the function work in headless / CI environments where ``plt.show()``
-    # may not display anything. Otherwise show the interactive window.
+
+    # -----------------------------------------------------------
+    # Output Section
+    # -----------------------------------------------------------
+
+    # If save_path is specified, save the plot as a PNG (headless mode)
     if save_path:
         plt.savefig(save_path, bbox_inches='tight')
-        plt.close()
+        plt.close()   # Close the figure to free memory!!
     else:
-        plt.show()
+        plt.show()   # OR-> show the plot interactively (desktop mode)
 
 
+# -----------------------------------------------------------
+# MAIN | Command-line Interface (CLI) Section
+# -----------------------------------------------------------
 if __name__ == "__main__":
     import argparse
 
@@ -151,18 +173,25 @@ if __name__ == "__main__":
         appropriate exit code (0 on success, non-zero on error).
         """
         parser = argparse.ArgumentParser(
-            description='Plot life expectancy for a country'
+            description="Plot life expectancy for a country"
         )
-        parser.add_argument('country', nargs='?', default='France')
-        parser.add_argument(
-            '-o', '--out', help='Output filename for the plot (PNG)'
-        )
-        args = parser.parse_args()
 
+        # Optional argument: specify country name (default = France)
+        parser.add_argument("country", nargs="?", default="France")
+
+        # Optional output filename flag
+        parser.add_argument(
+            "-o",
+            "--out",
+            help="Output filename for the plot (PNG)",
+        )
+
+        # Parse command-line arguments into 'args'
+        args = parser.parse_args()
         out = args.out or f"{args.country.lower().replace(' ', '_')}_plot.png"
 
-        # Use the requested ticks for the France example.
-        if args.country.lower() == 'france':
+        # Define custom ticks for France example
+        if args.country.lower() == "france":
             xticks = [1800, 1840, 1880, 1920, 1960, 2000, 2040, 2080]
             yticks = [30, 40, 50, 60, 70, 80, 90]
             xlabel = None
@@ -183,6 +212,5 @@ if __name__ == "__main__":
         except Exception as e:
             print("Error:", e)
             return 1
-
 
     raise SystemExit(main())
