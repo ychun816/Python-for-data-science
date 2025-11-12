@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+# Shebang comment: file is executable with Python 3
 
-import importlib.util
-import os
+import os  # Provides OS path and file operations
 from typing import Iterable, Optional
 
 import pandas as pd
@@ -11,44 +11,46 @@ from matplotlib import ticker as plticker
 
 from load_csv import load
 
-# Convert shorthand numbers (e.g., '1k', '2.5M', '3B') to integers
+# -------------------------------------------------------------------
+# CONSTANTS AND HELPERS
+# -------------------------------------------------------------------
+
+# Mapping suffixes like 'k', 'm', 'b' to their numerical multipliers
 tens = dict(k=1e3, m=1e6, b=1e9)
 
 
 def formater(value, _tick) -> str:
-    """Format tick values into human-friendly abbreviations.
+    """Convert raw numeric tick values into human-friendly short form.
 
     Examples:
-        1000 -> '1.0k', 1500000 -> '1M', 2500000000 -> '2.5B'
+        1000 -> '1k', 1500000 -> '1M', 2500000000 -> '2.5B'
     """
     try:
-        v = float(value)
+        v = float(value)  # Convert to float for consistent scaling
     except Exception:
-        return str(value)
+        return str(value)  # Fallback if not a number
 
-    # Helper to format scaled values without unnecessary '.0'
+    # Helper function to format with suffix, trimming '.0' if unnecessary
     def _fmt(val, suffix, decimals=1):
         s = f"{val:.{decimals}f}"
         if s.endswith('.0'):
             s = s[:-2]
         return f"{s}{suffix}"
 
+    # Format according to magnitude
     if v >= 1e9:
         return _fmt(v / 1e9, 'B')
     if v >= 1e6:
         return _fmt(v / 1e6, 'M', decimals=0)
     if v >= 1e3:
-        # For thousands prefer no decimal when value is whole (1k, 10k)
         return _fmt(v / 1e3, 'k', decimals=0)
-
-    # For small numbers, show integer when appropriate
     if abs(v - round(v)) < 1e-6:
-        return str(int(round(v)))
+        return str(int(round(v)))  # Avoid '.0' for integers
     return f"{v:.1f}"
 
 
 def find_base(min_value: float, max_value: float) -> int:
-    """Choose a reasonable tick interval based on range size."""
+    """Choose a reasonable tick spacing depending on numeric range."""
     range_value = max_value - min_value
     if range_value >= 2e5:
         return 50000
@@ -61,79 +63,79 @@ def find_base(min_value: float, max_value: float) -> int:
     return 2000
 
 
+# -------------------------------------------------------------------
+# PLOTTING FUNCTION
+# -------------------------------------------------------------------
+
 def render_plot(
     df_life_gdp: pd.DataFrame, year: str, save_path: Optional[str] = None
 ) -> None:
-    """Render scatter plot of GDP vs Life Expectancy for a given year.
+    """Draw scatter plot: GDP vs Life Expectancy for a given year.
 
-    If save_path is provided the plot will be written to that file. If not,
-    the plot will be shown interactively.
+    If save_path is specified → save the PNG file.
+    If not → show interactively (useful for local testing).
     """
-    sns.set_theme()
+    sns.set_theme()  # Apply seaborn visual theme
 
+    # Create scatter plot
     sc = sns.scatterplot(
         data=df_life_gdp,
         x="GDP",
         y="Life Expectancy",
-        hue="Country",
-        legend=False,
+        hue="Country",  # Color by country
+        legend=False,   # Omit legend as requested
     )
 
-    # Large, centered year-only title (matches requested style)
+    # Configure title and axis labels
     plt.title(f"{year}", fontsize=20, pad=12)
     plt.xlabel("Gross domestic product", fontsize=10)
-    # Use the exact Y label requested by the user
-    plt.ylabel("Life expantancy", fontsize=10)
+    plt.ylabel("Life expantancy", fontsize=10)  # Matches required spelling
     plt.tick_params(axis="both", labelsize=8)
 
+    # Apply number formatter to x-axis
     sc.xaxis.set_major_formatter(plt.FuncFormatter(formater))
 
-    # Set explicit x-range and ticks per user request: 300 -> 1k -> 10k
+    # Fixed X-axis ticks and limits (per exercise spec)
     x_ticks = [300, 1000, 10000]
     sc.xaxis.set_major_locator(plticker.FixedLocator(x_ticks))
-    # Force x-limits to the requested range so ticks show consistently
     try:
         sc.set_xlim(300, 10000)
     except Exception:
         plt.xlim(300, 10000)
 
-    # Y-axis ticks explicitly requested by the user (20..55 step 5)
+    # Fixed Y-axis ticks and limits (20 to 55 step 5)
     y_ticks = [20, 25, 30, 35, 40, 45, 50, 55]
     sc.yaxis.set_major_locator(plticker.FixedLocator(y_ticks))
-    # Force y-limits so ticks are visible and match the requested range
     try:
         sc.set_ylim(min(y_ticks), max(y_ticks))
     except Exception:
         plt.ylim(min(y_ticks), max(y_ticks))
 
-    # Legend intentionally omitted per user request
-
+    # Save or display plot
     if save_path:
         plt.tight_layout()
         plt.savefig(save_path, dpi=150)
-        # print(f"Saved plot to {os.path.abspath(save_path)}")
     else:
         plt.show()
 
 
-def _first_existing(candidates: Iterable[str]) -> str:
-    """Return the first path that exists from `candidates`.
+# -------------------------------------------------------------------
+# CSV LOADING HELPERS
+# -------------------------------------------------------------------
 
-    If none of the candidates exist return the first candidate so the
-    caller's loader can raise a descriptive FileNotFoundError.
+def _first_existing(candidates: Iterable[str]) -> str:
+    """Return first path that exists among given candidates.
+
+    If none exist, return the first candidate (so load() fails meaningfully).
     """
     for p in candidates:
         if os.path.exists(p):
             return p
-    # return first candidate (so load will raise FileNotFoundError)
     return list(candidates)[0]
 
 
 def _parse_gdp_value(x):
-    """Parse shorthand GDP values like '1k', '2.5M', '3B' into int.
-
-    Raises ValueError on unparseable input.
-    """
+    """Convert GDP shorthand (e.g. '2.5M', '3B') to integer."""
     if isinstance(x, str) and x:
         s = x.strip()
         last = s[-1].lower()
@@ -142,7 +144,7 @@ def _parse_gdp_value(x):
                 return int(float(s[:-1]) * tens[last])
             except Exception:
                 pass
-        # try plain numeric string
+        # Try parsing plain numeric string
         try:
             return int(float(s))
         except Exception:
@@ -153,72 +155,52 @@ def _parse_gdp_value(x):
         raise ValueError(f"Unable to parse GDP value: {x}")
 
 
+# -------------------------------------------------------------------
+# MAIN DATA HANDLING FUNCTION
+# -------------------------------------------------------------------
+
 def gdp_life_expectancy(year: str, save_path: Optional[str] = None) -> None:
-    """Load CSVs, merge life expectancy and GDP for the given year."""
+    """Load and merge life expectancy + GDP CSVs for given year."""
     abs_path = os.path.dirname(os.path.abspath(__file__))
 
+    # Potential file locations (different environments)
     life_candidates = (
-        os.path.join(
-            abs_path,
-            "..",
-            "data",
-            "life_expectancy_years.csv",
-        ),
-        os.path.join(
-            abs_path,
-            "..",
-            "life_expectancy_years.csv",
-        ),
+        os.path.join(abs_path, "..", "data", "life_expectancy_years.csv"),
+        os.path.join(abs_path, "..", "life_expectancy_years.csv"),
     )
     gdp_candidates = (
         os.path.join(
             abs_path,
             "..",
             "data",
-            (
-                "income_per_person_gdppercapita_"
-                "ppp_inflation_adjusted.csv"
-            ),
+            "income_per_person_gdppercapita_ppp_inflation_adjusted.csv",
         ),
         os.path.join(
             abs_path,
             "..",
-            (
-                "income_per_person_gdppercapita_"
-                "ppp_inflation_adjusted.csv"
-            ),
+            "income_per_person_gdppercapita_ppp_inflation_adjusted.csv",
         ),
     )
 
-    # Prefer the loader from ex02 if available (user request). Fall back to
-    # the local `load` imported at module level.
+    # use load_csv.py
     def _call_loader(csv_path: str):
-        # candidate ex02 loader location
-        ex02_loader = os.path.join(abs_path, "..", "ex02", "load_csv.py")
-        if os.path.exists(ex02_loader):
-            try:
-                spec = importlib.util.spec_from_file_location(
-                    "ex02_load_csv", ex02_loader
-                )
-                mod = importlib.util.module_from_spec(spec)
-                assert spec and spec.loader
-                spec.loader.exec_module(mod)  # type: ignore[attr-defined]
-                if hasattr(mod, "load"):
-                    return mod.load(csv_path)
-            except Exception:
-                # If anything fails, fall back to the default `load`.
-                pass
+        """Use the local ex03 `load` function to read CSVs.
+
+        The module already imports `load` from the sibling
+        `load_csv.py` (ex03). Prefer that loader to ensure consistent
+        behavior with this exercise's utilities.
+        """
         return load(csv_path)
 
+    # Load both datasets (life expectancy and GDP)
     df_life = _call_loader(_first_existing(life_candidates))
     df_gdp = _call_loader(_first_existing(gdp_candidates))
 
-    # If the loader returns a preview-wrapper (DatasetView) extract raw DF
+    # Extract raw pandas DataFrame if wrapped (DatasetView)
     if hasattr(df_life, "raw"):
         try:
             df_life = df_life.raw()
         except Exception:
-            # leave as-is; load() should have printed an error earlier
             pass
     if hasattr(df_gdp, "raw"):
         try:
@@ -229,29 +211,26 @@ def gdp_life_expectancy(year: str, save_path: Optional[str] = None) -> None:
     if df_life is None or df_gdp is None:
         raise RuntimeError("CSV data could not be loaded")
 
-    # The CSVs in this exercise use year column names like '2010' (strings).
+    # Validate the requested year exists in both datasets
     if year not in df_life.columns or year not in df_gdp.columns:
         raise ValueError(f"{year} not found in dataset columns")
 
-    df_life_sel = (
-        df_life[["country", year]]
-        .rename(columns={year: "Life Expectancy"})
+    # Select and rename relevant columns for clarity
+    df_life_sel = df_life[["country", year]].rename(
+        columns={year: "Life Expectancy"}
     )
-    df_gdp_sel = (
-        df_gdp[["country", year]]
-        .rename(columns={year: "GDP"})
-    )
+    df_gdp_sel = df_gdp[["country", year]].rename(columns={year: "GDP"})
 
-    df_merged = (
-        pd.merge(df_life_sel, df_gdp_sel, on="country", how="inner")
-        .dropna()
-    )
+    # Merge the two datasets by country
+    df_merged = pd.merge(
+        df_life_sel, df_gdp_sel, on="country", how="inner"
+    ).dropna()
 
-    # convert GDP to integer values
-
+    # Convert GDP values from shorthand to integers
     df_merged["GDP"] = df_merged["GDP"].apply(_parse_gdp_value)
     df_merged["Country"] = df_merged["country"]
 
+    # Pass to plotting function
     render_plot(
         df_merged[["Country", "Life Expectancy", "GDP"]],
         year,
@@ -259,14 +238,17 @@ def gdp_life_expectancy(year: str, save_path: Optional[str] = None) -> None:
     )
 
 
+# -------------------------------------------------------------------
+# COMMAND LINE INTERFACE (CLI)
+# -------------------------------------------------------------------
+
 if __name__ == "__main__":
     import argparse
 
     def main() -> int:
         """CLI wrapper for `gdp_life_expectancy`.
 
-        Parses CLI args, calls the plotting function, and catches
-        exceptions so they don't escape to the interpreter.
+        Parses command-line arguments and calls the plotting function.
         """
         p = argparse.ArgumentParser()
         p.add_argument("-y", "--year", default="1900", help="Year to plot")
@@ -275,15 +257,13 @@ if __name__ == "__main__":
             "--output",
             default=None,
             help=(
-                "Optional path to save the plot as PNG. "
-                "If omitted the plot is shown."
+                "Optional path to save plot as PNG. "
+                "If not provided, a default path is used."
             ),
         )
         args = p.parse_args()
 
-        # If no output path provided, save to a sensible default instead of
-        # attempting an interactive display. This avoids silently not producing
-        # a graphic in headless environments (CI, containers, remote shells).
+        # Default output path if user doesn’t specify one
         if not args.output:
             args.output = os.path.join(
                 os.path.dirname(os.path.abspath(__file__)),
@@ -297,5 +277,5 @@ if __name__ == "__main__":
             print("Error:", e)
             return 1
 
-
+    # Ensure clean process exit code
     raise SystemExit(main())
