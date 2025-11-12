@@ -39,7 +39,10 @@ def _import_ex00_loader():
         raise ImportError(msg)
 
 
-load = _import_ex00_loader()
+# Do not import the ex00 loader at module import time. Obtaining the
+# loader at import time can perform I/O and raise during import which
+# violates the "no global code" rule. Call `_import_ex00_loader()` at
+# runtime instead (see usage in `life_expectancy`).
 
 
 def life_expectancy(
@@ -61,7 +64,8 @@ def life_expectancy(
     )
     # Use the basename so the ex00 loader can resolve the file from
     # the shared ../data directory when called from the exercises.
-    data = load(os.path.basename(csv_path))
+    loader = _import_ex00_loader()
+    data = loader(os.path.basename(csv_path))
 
     if data is None:
         raise ValueError(f"Country '{country}' not found in dataset.")
@@ -137,39 +141,48 @@ def life_expectancy(
 
 
 if __name__ == "__main__":
-    # Minimal CLI: running `python aff_life.py` will generate a plot for
-    # France (suitable for headless/CI environments). No extra
-    # descriptive text is printed.
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description='Plot life expectancy for a country'
-    )
-    parser.add_argument('country', nargs='?', default='France')
-    parser.add_argument(
-        '-o', '--out', help='Output filename for the plot (PNG)'
-    )
-    args = parser.parse_args()
+    def main() -> int:
+        """CLI wrapper for `life_expectancy`.
 
-    out = args.out or f"{args.country.lower().replace(' ', '_')}_plot.png"
+        Parses command-line arguments and calls the plotting function.
+        Exceptions are caught and reported; the function returns an
+        appropriate exit code (0 on success, non-zero on error).
+        """
+        parser = argparse.ArgumentParser(
+            description='Plot life expectancy for a country'
+        )
+        parser.add_argument('country', nargs='?', default='France')
+        parser.add_argument(
+            '-o', '--out', help='Output filename for the plot (PNG)'
+        )
+        args = parser.parse_args()
 
-    # Use the requested ticks for the France example.
-    if args.country.lower() == 'france':
-        xticks = [1800, 1840, 1880, 1920, 1960, 2000, 2040, 2080]
-        yticks = [30, 40, 50, 60, 70, 80, 90]
-        # do not add a country-specific bottom description; use default
-        # xlabel (Year) instead
-        xlabel = None
-    else:
-        xticks = None
-        yticks = None
-        xlabel = None
+        out = args.out or f"{args.country.lower().replace(' ', '_')}_plot.png"
 
-    # Generate and save silently (no description text printed).
-    life_expectancy(
-        args.country,
-        save_path=out,
-        xticks=xticks,
-        yticks=yticks,
-        xlabel=xlabel,
-    )
+        # Use the requested ticks for the France example.
+        if args.country.lower() == 'france':
+            xticks = [1800, 1840, 1880, 1920, 1960, 2000, 2040, 2080]
+            yticks = [30, 40, 50, 60, 70, 80, 90]
+            xlabel = None
+        else:
+            xticks = None
+            yticks = None
+            xlabel = None
+
+        try:
+            life_expectancy(
+                args.country,
+                save_path=out,
+                xticks=xticks,
+                yticks=yticks,
+                xlabel=xlabel,
+            )
+            return 0
+        except Exception as e:
+            print("Error:", e)
+            return 1
+
+
+    raise SystemExit(main())

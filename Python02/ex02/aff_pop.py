@@ -127,14 +127,27 @@ def population_total(country: str, compare_country: str) -> None:
 
 
 if __name__ == "__main__":
-    # Minimal CLI: `python aff_pop.py [country] [compare_country]`
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Compare population for two countries (1800-2050)"
-    )
-    parser.add_argument("country", nargs="?", default="France")
-    parser.add_argument("compare", nargs="?", default="Belgium")
-    args = parser.parse_args()
+    def main() -> int:
+        """CLI wrapper for `population_total`.
 
-    population_total(args.country, args.compare)
+        Parses CLI arguments and calls the function. Exceptions are
+        caught and reported; returns 0 on success, non-zero on error.
+        """
+        parser = argparse.ArgumentParser(
+            description="Compare population for two countries (1800-2050)"
+        )
+        parser.add_argument("country", nargs="?", default="France")
+        parser.add_argument("compare", nargs="?", default="Belgium")
+        args = parser.parse_args()
+
+        try:
+            population_total(args.country, args.compare)
+            return 0
+        except Exception as e:
+            print("Error:", e)
+            return 1
+
+
+    raise SystemExit(main())

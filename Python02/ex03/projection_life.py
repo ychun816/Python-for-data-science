@@ -117,6 +117,11 @@ def render_plot(
 
 
 def _first_existing(candidates: Iterable[str]) -> str:
+    """Return the first path that exists from `candidates`.
+
+    If none of the candidates exist return the first candidate so the
+    caller's loader can raise a descriptive FileNotFoundError.
+    """
     for p in candidates:
         if os.path.exists(p):
             return p
@@ -125,6 +130,10 @@ def _first_existing(candidates: Iterable[str]) -> str:
 
 
 def _parse_gdp_value(x):
+    """Parse shorthand GDP values like '1k', '2.5M', '3B' into int.
+
+    Raises ValueError on unparseable input.
+    """
     if isinstance(x, str) and x:
         s = x.strip()
         last = s[-1].lower()
@@ -251,29 +260,42 @@ def gdp_life_expectancy(year: str, save_path: Optional[str] = None) -> None:
 
 
 if __name__ == "__main__":
-    # Default to year 1900 and save to a sensible filename when run directly.
     import argparse
 
-    p = argparse.ArgumentParser()
-    p.add_argument("-y", "--year", default="1900", help="Year to plot")
-    p.add_argument(
-        "-o",
-        "--output",
-        default=None,
-        help=(
-            "Optional path to save the plot as PNG. "
-            "If omitted the plot is shown."
-        ),
-    )
-    args = p.parse_args()
+    def main() -> int:
+        """CLI wrapper for `gdp_life_expectancy`.
 
-    # If no output path provided, save to a sensible default instead of
-    # attempting an interactive display. This avoids silently not producing
-    # a graphic in headless environments (CI, containers, remote shells).
-    if not args.output:
-        args.output = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            f"gdp_life_{args.year}.png",
+        Parses CLI args, calls the plotting function, and catches
+        exceptions so they don't escape to the interpreter.
+        """
+        p = argparse.ArgumentParser()
+        p.add_argument("-y", "--year", default="1900", help="Year to plot")
+        p.add_argument(
+            "-o",
+            "--output",
+            default=None,
+            help=(
+                "Optional path to save the plot as PNG. "
+                "If omitted the plot is shown."
+            ),
         )
+        args = p.parse_args()
 
-    gdp_life_expectancy(args.year, save_path=args.output)
+        # If no output path provided, save to a sensible default instead of
+        # attempting an interactive display. This avoids silently not producing
+        # a graphic in headless environments (CI, containers, remote shells).
+        if not args.output:
+            args.output = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                f"gdp_life_{args.year}.png",
+            )
+
+        try:
+            gdp_life_expectancy(args.year, save_path=args.output)
+            return 0
+        except Exception as e:
+            print("Error:", e)
+            return 1
+
+
+    raise SystemExit(main())

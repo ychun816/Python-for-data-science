@@ -32,9 +32,9 @@ TEST_ARG="Python 3.0, released in 2008, was a major revision that is not complet
 REPOS=(
     # "Python00"
     # "Python01"
-    # "Python02"
+    "Python02"
     # "Python03"
-    "Python04"
+    # "Python04"
 )
 
 
