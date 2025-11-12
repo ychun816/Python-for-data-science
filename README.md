@@ -612,6 +612,104 @@ When imported → still prints "Run!"
 ---
 
 ## 2️⃣ Python02 
+Excellent question — this gets into some of Python’s most important conventions and special syntax.
+Let’s go step-by-step so it’s crystal clear.
+
+---
+
+## 🔹 1. `__main__` and Double Underscores (`__name__`, etc.)
+
+Python uses **double underscores** (`__like_this__`) for *special built-in names* — also known as **dunder names** ("double underscore").
+They’re not just decoration — they have special meanings in the Python runtime.
+
+Here’s a clear table of the **most relevant ones** you’ll see often:
+
+| Syntax                   | Name                                     | When It’s Used / What It Means                                                                             | Example                                          |
+| :----------------------- | :--------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :----------------------------------------------- |
+| `__main__`               | **Module name for the main script**      | When a Python file is run directly (e.g. `python myfile.py`), its `__name__` variable becomes `"__main__"` | `if __name__ == "__main__":`                     |
+| `__name__`               | Current module’s name                    | Automatically set by Python: `"__main__"` if run directly, or the module name if imported                  | `print(__name__)`                                |
+| `__init__`               | Constructor method in a class            | Called when you create a new instance                                                                      | `def __init__(self):`                            |
+| `__str__`                | String representation for humans         | Used when you call `print(obj)`                                                                            | `def __str__(self): return "Nice!"`              |
+| `__repr__`               | String representation for debugging      | Used in interactive shells or `repr(obj)`                                                                  | `def __repr__(self): return "Obj(...)"`          |
+| `__len__`                | Length of an object                      | Lets you use `len(obj)`                                                                                    | `def __len__(self): return len(self.data)`       |
+| `__getitem__`            | Index access                             | Enables `obj[i]` syntax                                                                                    | `def __getitem__(self, i): return self.items[i]` |
+| `__setattr__`            | Called when setting attributes           | Controls `obj.x = 5` behavior                                                                              | Used in ORM models, dataclasses, etc.            |
+| `__getattr__`            | Called when accessing missing attributes | Lets you define fallback lookups                                                                           | `def __getattr__(self, name): ...`               |
+| `__call__`               | Makes an object callable                 | Lets you use `obj()` as if it were a function                                                              | `def __call__(self, *a): ...`                    |
+| `__iter__` / `__next__`  | Iteration protocol                       | Enables `for x in obj`                                                                                     | Used in custom iterator classes                  |
+| `__enter__` / `__exit__` | Context manager protocol                 | Used in `with` statements                                                                                  | `with MyContext():`                              |
+| `__file__`               | Path to the current module file          | Used to build relative paths                                                                               | `os.path.dirname(__file__)`                      |
+| `__doc__`                | Module or function docstring             | The first triple-quoted string in a file or function                                                       | `print(myfunc.__doc__)`                          |
+
+---
+
+### 🧩 The most common “main guard” pattern:
+
+```python
+if __name__ == "__main__":
+    # Only runs if this file is executed directly,
+    # not when imported from another module.
+    main()
+```
+
+✅ Purpose:
+
+* Prevents accidental execution of test or CLI code when imported.
+* Makes scripts reusable both as **modules** and **standalone programs**.
+
+---
+
+## 🔹 2. Single Underscore Prefix (`_name`)
+
+Now, about `_call_loader` and that **underscore prefix**.
+
+This is **not special syntax** like `__main__` — it’s a **naming convention** meaning **“internal use”** or **“private”** within that file or module.
+
+| Syntax      | Meaning                                 | Behavior                                                                                                                        |
+| :---------- | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| `_name`     | Internal/private function or variable   | Shouldn’t be used outside the module; Python doesn’t enforce this strictly, but by convention it means “for internal use only.” |
+| `__name`    | Name-mangled attribute (inside classes) | Python changes its name internally to prevent accidental access (`_ClassName__name`)                                            |
+| `_` (alone) | Common throwaway variable               | Used when you don’t care about the value (e.g., `for _, v in data:` or `_tick` in your code)                                    |
+
+### Example:
+
+```python
+def _call_loader(csv_path):
+    """Internal helper — not meant to be imported elsewhere."""
+    ...
+```
+
+→ The underscore tells readers:
+
+> “This is a helper function for internal logic; don’t import or rely on it outside this module.”
+
+It still works normally — Python won’t forbid access — but it signals **intent**.
+
+---
+
+## 🔹 Summary Table — Underscore Usage in Python
+
+| Form                     | Meaning                         | Example                                  |
+| ------------------------ | ------------------------------- | ---------------------------------------- |
+| `_variable`              | Private/internal use            | `_temp = 5`                              |
+| `__variable`             | Name-mangled (inside classes)   | `self.__count` → becomes `_Class__count` |
+| `__var__`                | Special system-defined name     | `__init__`, `__main__`, `__file__`       |
+| `_`                      | Unused/throwaway placeholder    | `for _, value in pairs:`                 |
+| `__name__ == "__main__"` | Check if script is run directly | Typical entrypoint guard                 |
+
+---
+
+## 🧠 Quick Analogy
+
+Think of it like:
+
+* `__double__` = “Python’s reserved words”
+* `_single` = “private helper”
+* `no underscore` = “public interface”
+
+---
+
+
 ## 3️⃣ Python03
 ## 4️⃣ Python04
 
