@@ -84,8 +84,11 @@ def render_plot(
         y="Life Expectancy",
         hue="Country",  # Color by country
         legend=False,   # Omit legend as requested
+        color="blue",  # Uniform color for all points
     )
 
+    sc.set(xscale="log") # Set X-axis to logarithmic scale
+    sc.grid(False)  # Disable grid for cleaner look
     # Configure title and axis labels
     plt.title(f"{year}", fontsize=20, pad=12)
     plt.xlabel("Gross domestic product", fontsize=10)

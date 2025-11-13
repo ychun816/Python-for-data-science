@@ -95,8 +95,19 @@ def population_total(country: str, compare_country: str) -> None:
     # Configure seaborn visual theme for consistent styling
     sns.set_theme()
 
+
     # Create line plot comparing population trends of both countries
-    ax = sns.lineplot(data=df_long, x="Year", y="Population", hue="country")
+    # Color France green and Belgium blue; other countries (if present)
+    # will use seaborn's default color cycle.
+    ax = sns.lineplot(
+        data=df_long,
+        x="Year",
+        y="Population",
+        hue="country",
+        palette={"France": "green", "Belgium": "blue"},
+    )
+
+    ax.grid(False)  # Enable grid for better readability
 
     # Add chart title and axis labels
     ax.set_title("Population Projections", fontsize=14)
@@ -194,3 +205,15 @@ def main() -> int:
 if __name__ == "__main__":
     # Call main() and exit with its return code
     raise SystemExit(main())
+
+# Input (wide):
+# country | 1900 | 1910
+# France | "41M" | "43M"
+# Belgium | "7M" | "7.5M"
+
+# After melt + unpack:
+# country | Year | Population
+# France | 1900 | 41000000
+# France | 1910 | 43000000
+# Belgium | 1900 | 7000000
+# Belgium | 1910 | 7500000

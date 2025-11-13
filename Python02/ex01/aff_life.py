@@ -119,6 +119,8 @@ def life_expectancy(
     # Add a descriptive title to the plot
     ax.set_title(f"{country} Life Expectancy Projections")
 
+    ax.grid(False)  # Enable grid for better readability
+
     # Handle X-axis label visibility and positioning
     if xlabel:
         ax.set_xlabel(xlabel)
@@ -128,7 +130,7 @@ def life_expectancy(
     else:
         # Hide X-axis label completely
         # Seaborn will auto-set axis labels from the column names. If the
-        ax.xaxis.label.set_visible(False)
+        ax.xaxis.label.set_visible(True)
 
     # Y-axis as 'Life Expectancy'
     ax.set_ylabel('Life Expectancy')
