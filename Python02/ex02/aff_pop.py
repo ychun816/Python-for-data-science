@@ -113,6 +113,8 @@ def population_total(country: str, compare_country: str) -> None:
     ax.set_title("Population Projections", fontsize=14)
     ax.set_xlabel("Year", fontsize=10)
     ax.set_ylabel("Population", fontsize=10)
+    # Place legend in the lower-right corner of the plot
+    ax.legend(loc="lower right")
 
     # Define X-axis ticks and formatting (every ~40 years)
     xticks = [1800, 1840, 1880, 1920, 1960, 2000, 2040]
