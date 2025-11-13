@@ -78,19 +78,21 @@ def render_plot(
     sns.set_theme()  # Apply seaborn visual theme
 
     # Create scatter plot
+    # Use a single color for all points. When `hue` is provided,
+    # seaborn maps colors by category and ignores the `color` kwarg.
+    # To force all points to be blue, remove `hue` and pass `color`.
     sc = sns.scatterplot(
         data=df_life_gdp,
         x="GDP",
         y="Life Expectancy",
-        hue="Country",  # Color by country
-        legend=False,   # Omit legend as requested
-        color="blue",  # Uniform color for all points
+        color="#4682B4",  # steelblue — stronger blue
+        legend=False,
     )
 
     sc.set(xscale="log") # Set X-axis to logarithmic scale
     sc.grid(False)  # Disable grid for cleaner look
     # Configure title and axis labels
-    plt.title(f"{year}", fontsize=20, pad=12)
+    plt.title(f"{year}", fontsize=12, pad=8)
     plt.xlabel("Gross domestic product", fontsize=10)
     plt.ylabel("Life expantancy", fontsize=10)  # Matches required spelling
     plt.tick_params(axis="both", labelsize=8)

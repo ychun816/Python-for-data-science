@@ -104,7 +104,7 @@ def population_total(country: str, compare_country: str) -> None:
         x="Year",
         y="Population",
         hue="country",
-        palette={"France": "green", "Belgium": "blue"},
+        palette={"France": "green", "Belgium": "#4682B4"},  # steelblue
     )
 
     ax.grid(False)  # Enable grid for better readability

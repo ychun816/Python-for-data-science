@@ -114,7 +114,7 @@ def life_expectancy(
         x='Year',
         y='Life Expectancy',
         label='Life Expectancy',  # Label for legend
-        # label='nolegend',  # Label for legend
+        legend=False,  # Do not display legend
     )
 
     # Add a descriptive title to the plot
@@ -149,9 +149,9 @@ def life_expectancy(
         ax.set_yticks(yticks)
 
     # Ensure no legend is displayed (we keep labels for clarity but hide the legend)
-    legend = ax.get_legend()
-    if legend:
-        legend.remove()
+    # legend = ax.get_legend()
+    # if legend:
+    #     legend.remove()
 
     # -----------------------------------------------------------
     # Output Section
