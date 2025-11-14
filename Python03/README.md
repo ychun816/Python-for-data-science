@@ -1188,13 +1188,6 @@ Joffrey.eyes = "red"
 
 ```
 
-Excellent 💪 — this **Exercise 03: Calculate My Vector** builds on your Python OOP foundation and introduces a key concept:
-👉 **Operator overloading with dunder methods** (`__add__`, `__mul__`, `__sub__`, `__truediv__`).
-
-Let’s break it all down step by step — with code, diagram, and reasoning.
-
----
-
 ## 🧠 1. Concept Overview: Vector × Scalar
 
 You’re asked to create a **`calculator` class** that represents a **vector** (a list of numbers)
@@ -1410,7 +1403,229 @@ ASCII Diagram — Execution Flow
 | `print(f"...")`      | f-string formatting            | Clean output               |
 
 
+### *1. What Your Code Does**
+
+You created a class `calculator` containing three mathematical vector operations:
+
+* **dotproduct**
+* **add_vec**
+* **sous_vec** (subtraction)
+
+All three are decorated with:
+
+```python
+@staticmethod
+```
+
+This means you can call them directly on the class without creating an object.
+
+Example:
+
+```python
+calculator.dotproduct(a, b)
+```
+
+You **do NOT** need to do this:
+
+```python
+calc = calculator()     # No instantiation needed
+calc.dotproduct(a, b)
+```
+
+This is exactly what the exercise requires.
+
+---
+
+### **2. Detailed Explanation of Each Part**
+
+---
+
+#### **Class Definition**
+
+```python
+class calculator:
+```
+
+Defines a namespace that contains functions related to vector operations.
+
+No initialization (`__init__`) needed because all methods are static.
+
+---
+
+#### **Decorator: @staticmethod**
+
+Each method is preceded by:
+
+```python
+@staticmethod
+```
+
+This means:
+
+* The method does NOT take `self`
+* The method does NOT depend on instance data
+* The method belongs to the class, not the instance
+
+So you can call:
+
+```python
+calculator.dotproduct([1,2],[3,4])
+```
+
+---
+
+#### **dotproduct**
+
+```python
+@staticmethod
+def dotproduct(v1, v2):
+    result = sum(x * y for x, y in zip(v1, v2))
+    print(f"Dot product is: {result}")
+```
+
+Calculates:
+
+```
+x1*y1 + x2*y2 + x3*y3 + ...
+```
+
+`zip` pairs elements from both vectors.
+
+Example for `[5, 10, 2]` and `[2, 4, 3]`:
+
+```
+5*2 + 10*4 + 2*3 = 10 + 40 + 6 = 56
+```
+
+---
+
+#### **add_vec**
+
+```python
+result = [float(x + y) for x, y in zip(v1, v2)]
+```
+
+Produces:
+
+```
+[5+2, 10+4, 2+3] → [7.0, 14.0, 5.0]
+```
+
+Wrapped in a print:
+
+```
+Add Vector is : [7.0, 14.0, 5.0]
+```
+
+Spacing is made to match the expected output.
+
+---
+
+#### **sous_vec** (subtraction)
+
+```python
+result = [float(x - y) for x, y in zip(v1, v2)]
+```
+
+Produces:
+
+```
+[5-2, 10-4, 2-3] → [3.0, 6.0, -1.0]
+```
+
+Correct output format:
+
+```
+Sous Vector is: [3.0, 6.0, -1.0]
+```
+
+---
+
+### **3. Why @staticmethod Is the Correct Decorator**
+
+The exercise explicitly hints:
+
+> "find a decorator that can help you to use the Methods of the calculator
+> class without instantiating this class."
+
+There are three choices:
+
+| Decorator       | Behavior                                         |
+| --------------- | ------------------------------------------------ |
+| `@staticmethod` | Best for functions not needing class or instance |
+| `@classmethod`  | Requires a `cls` argument, not relevant here     |
+| No decorator    | Would require instantiation                      |
+
+Because your vector functions:
+
+* do not depend on the class,
+* do not depend on any instance attributes,
+
+`@staticmethod` is the perfect choice.
+
+---
+
+### **4. Key Takeaway Notions for This Exercise**
 
 
+#### **✓ 1. Static Methods**
 
+* Methods that belong to the class, **not** the object
+* No `self`, no `cls`
+* Called directly on the class
+* Perfect for mathematical utilities
 
+This is the core lesson.
+
+---
+
+#### **✓ 2. Decorators in Python**
+
+* You learn how `@something` modifies a function
+* In this case, making it "static" (no implicit arguments)
+
+Understanding decorators is essential for future work with:
+
+* properties
+* class methods
+* abstract methods
+* Flask / Django routing
+* data validation
+
+---
+
+#### **✓ 3. Encapsulation of Related Logic**
+
+All vector operations belong inside one logical “calculator” class.
+
+This teaches:
+
+* Organization of code
+* Namespacing through classes
+
+---
+
+#### **✓ 4. Vector math using `zip`**
+
+* `zip(v1, v2)` pairs elements
+* Useful for element-wise operations
+
+---
+
+#### **✓ 5. List comprehensions**
+
+Creating new lists concisely:
+
+```python
+[x + y for x, y in zip(v1, v2)]
+```
+
+---
+
+#### **✓ 6. Clean formatting with f-strings**
+
+For printing results:
+
+```python
+print(f"Dot product is: {result}")
+```
