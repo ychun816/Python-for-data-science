@@ -113,6 +113,58 @@ Here’s a side-by-side ASCII diagram showing how **object storage and reference
 - Character: Cannot be instantiated; defines die() as abstract.
 - Stark: Inherits Character and implements die().
 
+Here is a clear and structured explanation to help you understand the code *and* the important Python notions the exercise aims to teach.
+
+### **What important Python notions this exercise teaches**
+
+This exercise is introducing several **core Object-Oriented Programming concepts** in Python:
+
+#### **✓ 1. Abstract Base Classes (ABC)**
+
+* Using `from abc import ABC, abstractmethod`.
+* You learn that abstract classes:
+
+  * Cannot be instantiated.
+  * Exist to define required behavior for subclasses.
+
+#### **✓ 2. The `@abstractmethod` decorator**
+
+* Forces every subclass to implement the method.
+* Creates a proper interface-style constraint.
+
+#### **✓ 3. Class Inheritance**
+
+* `Stark` *inherits* from `Character`.
+* It gains attributes and structure from the parent class.
+* It customizes behavior by implementing its own `die()`.
+
+#### **✓ 4. Constructors (`__init__`)**
+
+* How to define instance attributes.
+* How to call a parent constructor with `super()`.
+
+#### **✓ 5. Instance attributes and `__dict__`**
+
+* Objects store their attributes in a dictionary accessible via `__dict__`.
+* Printing `Ned.__dict__` shows all attributes dynamically attached to the instance.
+
+#### **✓ 6. Docstrings**
+
+* The exercise checks:
+
+  * Class docstring
+  * Constructor docstring
+  * Method docstring
+* This teaches **documentation style and best practice**.
+
+#### **✓ 7. Encapsulation of object state**
+
+* `is_alive` is the character’s state.
+* Only the `die()` method should change it.
+
+---
+
+
 ## ex01
 
 ```sql
@@ -134,30 +186,246 @@ Here’s a side-by-side ASCII diagram showing how **object storage and reference
 ```
 - Adds `__str__`, `__repr__`, and classmethods to create chained family members.
 
+Here is a clear and structured explanation of your code, and a summary of the important Python notions this exercise teaches.
+
+---
+
+# **1. What Your Code Does**
+
+You create two families — **Baratheon** and **Lannister** — both inheriting from the abstract base class **Character**.
+
+Each class:
+
+* Calls the parent constructor with `super()`
+* Defines character-specific physical traits
+  (`family_name`, `eyes`, `hairs`)
+* Implements the required `die()` method (from the abstract class)
+* Implements `__str__` (human-readable)
+* Implements `__repr__` (developer/debug view)
+* Implements a `@classmethod create(...)`
+  (to allow chain-style creation)
+
+You also write a **helper function**:
+
+```python
+def create_lannister(first_name, is_alive=True):
+    return Lannister(first_name, is_alive)
+```
+
+This allows creating a Lannister without calling the class directly, depending on the exercise requirements.
+
+---
+
+# **2. Explanation of the Code**
+
+## **Baratheon Class**
+
+### **Constructor**
+
+```python
+def __init__(self, first_name: str, is_alive: bool = True):
+    super().__init__(first_name, is_alive)
+    self.family_name = "Baratheon"
+    self.eyes = "brown"
+    self.hairs = "dark"
+```
+
+* Calls the `Character` constructor to set `first_name` and `is_alive`
+* Adds Baratheon-specific features
+
+### **`__str__`**
+
+```python
+def __str__(self):
+    return f"{self.first_name} {self.family_name}"
+```
+
+* Used in `print(object)`
+* Must return a readable string
+
+### **`__repr__`**
+
+```python
+def __repr__(self):
+    return f"<Character: {self.first_name} {self.family_name}>"
+```
+
+* Used in debugging / console inspections
+* Must return a clear developer-style representation
+
+### **`die`**
+
+```python
+def die(self):
+    self.is_alive = False
+```
+
+### **Class Method**
+
+```python
+@classmethod
+def create(cls, first_name, is_alive=True):
+    return cls(first_name, is_alive)
+```
+
+* A method that belongs to the *class*, not the instance
+* Allows instantiation like:
+
+  ```python
+  Baratheon.create("Robert")
+  ```
+
+---
+
+## **Lannister Class**
+
+Implemented the same way, with different traits:
+
+```python
+self.family_name = "Lannister"
+self.eyes = "blue"
+self.hairs = "light"
+```
+
+Everything else mirrors Baratheon.
+
+---
+
+## **Helper Function**
+
+```python
+def create_lannister(first_name, is_alive=True):
+    return Lannister(first_name, is_alive)
+```
+
+This is a *function decorator alternative* for quickly creating Lannister characters depending on exercise requirements.
+
+---
+
+### **3. What the Exercise Is Teaching You (Key Takeaway Notions)**
+
+
+#### **✓ 1. Inheritance**
+
+Two classes inherit from `Character` and extend it with their own attributes.
+
+You learn how to:
+
+* Reuse parent logic
+* Add family-specific behavior
+* Implement required abstract methods
+
+
+#### **✓ 2. Using `super()`**
+
+You call the parent constructor properly:
+
+```python
+super().__init__(first_name, is_alive)
+```
+
+This reinforces how inheritance chains operate.
+
+---
+
+#### **✓ 3. Magic Methods (`__str__` and `__repr__`)**
+
+You learn the difference:
+
+| Method     | Purpose                        | Example Usage                  |
+| ---------- | ------------------------------ | ------------------------------ |
+| `__str__`  | Human-readable output          | `print(obj)`                   |
+| `__repr__` | Developer/debug representation | `repr(obj)` or in Python shell |
+
+The exercise specifically asks that these return **strings**, not objects.
+
+
+#### **✓ 4. Class Methods (`@classmethod`)**
+
+You create factory-style constructors:
+
+```python
+Jaine = Lannister.create("Jaine")
+```
+
+This teaches “chainable” or “alternative constructors”.
+
+
+#### **✓ 5. Namespace and Attributes (`__dict__`)**
+
+By printing `.__dict__`, you see the **internal attribute storage** of your objects:
+
+```python
+{
+ 'first_name': 'Robert',
+ 'is_alive': True,
+ 'family_name': 'Baratheon',
+ 'eyes': 'brown',
+ 'hairs': 'dark'
+}
+```
+
+This shows how Python stores instance data.
+
+
+### **✓ 6. Abstaction (Carried over from previous exercise)**
+
+Even though you don’t use `Character` directly, you respect its contract:
+every subclass must implement `die()`.
+
+---
 ## ex02
 
+This exercise (ex02) implements a DiamondTrap-style class that demonstrates
+multiple inheritance (a diamond pattern) and how Python's Method Resolution
+Order (MRO) resolves constructor and method calls. The `DiamondTrap` class
+inherits behavior from `ScavTrap` and `FragTrap` (which themselves inherit
+from `ClapTrap`). It uses `@property` and corresponding setters/getters to
+manage attributes (for example `eyes` and `hairs`) while providing small
+compatibility wrappers (like `set_eyes` / `get_eyes`) required by the
+exercise tester.
+
+Key points:
+- Multiple inheritance resolved via MRO (C3 linearization).
+- Use `super()` to correctly initialize the MRO chain.
+- Use `@property` and `@<prop>.setter` to control attribute access and keep
+  the instance `__dict__` consistent for the tester output.
+
+| Concept                 | Meaning                                       | Usage                    |
+| ----------------------- | --------------------------------------------- | ------------------------ |
+| `@property`             | Turns a method into attribute-like getter     | `obj.eyes`               |
+| `@eyes.setter`          | Defines how the attribute is modified         | `obj.eyes = "blue"`      |
+| `set_eyes` / `get_eyes` | Old-style wrappers required by Piscine tester | Simply call the property |
+
+
 ```sql
-      ┌───────────────┐
-      │    ClapTrap    │
-      └─────┬─────────┘
-            │
-      ┌─────▼─────────┐
-      │   ScavTrap     │
-      └─────┬─────────┘
-            │
-      ┌─────▼─────────┐
-      │ FragTrap      │
-      └─────┬─────────┘
-            │
-      ┌─────▼─────────┐
-      │ DiamondTrap   │
-      │---------------│
-      │ multiple inh. │
-      │ @property     │
-      │ setter/getter │
-      └───────────────┘
+            Character (ABC)
+                 │
+         ┌───────┴────────┐
+         │                │
+     Baratheon        Lannister
+         │                │
+         └───────┬────────┘
+                 │
+               King
+          (a DiamondTrap)
 
 ```
+```
+   Caller: Joffrey.set_eyes("blue")
+              │
+              ▼
+        set_eyes wrapper
+              │
+              ▼
+        property setter (eyes)
+              │
+    self.__dict__["eyes"] = "blue"
+              │
+              ▼
+        instance __dict__ updated
+```
+
 - DiamondTrap inherits from both ScavTrap and FragTrap, which themselves inherit from ClapTrap.
 - This forms the diamond problem, handled in Python by MRO (Method Resolution Order).
 - Uses properties to safely manage attributes like name, hit_points, etc.
@@ -167,6 +435,265 @@ Here’s a side-by-side ASCII diagram showing how **object storage and reference
 2. Single Inheritance → Simple parent-child relationships (Exercise 01).
 3. Multiple Inheritance + Diamond Problem → Python resolves conflicts using MRO (Exercise 02).
 4. @property and @setter → Manage access to sensitive attributes safely.
+
+
+### **1. What the Exercise Wants**
+
+You must create **Joffrey Baratheon**, a character who inherits from **both**:
+
+* `Baratheon`
+* `Lannister`
+
+This is **multiple inheritance** (a “diamond” pattern).
+
+But Joffrey is “weird,” so:
+
+* You must change his physical characteristics **using Properties**.
+* The tester uses:
+
+  * `Joffrey.set_eyes("blue")`
+  * `Joffrey.set_hairs("light")`
+  * `Joffrey.get_eyes()`
+  * `Joffrey.get_hairs()`
+
+So your class must support **property-based getters/setters** *and* additional wrapper functions.
+
+Expected output:
+The `.eyes` and `.hairs` attributes must change appropriately in `__dict__`.
+
+---
+
+### **2. Explanation of Your Code**
+
+Here is what every part does.
+
+---
+
+### **Class Declaration**
+
+```python
+class King(Baratheon, Lannister):
+```
+
+* `King` inherits **first** from `Baratheon`, then from `Lannister`.
+* The method resolution order (**MRO**) determines which parent initializes first.
+
+---
+
+### **Constructor**
+
+```python
+def __init__(self, first_name: str, is_alive: bool = True):
+    super().__init__(first_name, is_alive)
+```
+
+* `super()` calls the **first parent** in the MRO (`Baratheon.__init__`).
+* That parent sets:
+
+  ```python
+  family_name = "Baratheon"
+  eyes = "brown"
+  hairs = "dark"
+  ```
+* You intentionally **do not override** these attributes, because Joffrey begins with Baratheon features.
+
+---
+
+### **3. Properties**
+
+This exercise introduces **Python properties**, a powerful mechanism for controlling attribute access.
+
+---
+
+### **Property: eyes**
+
+```python
+@property
+def eyes(self):
+    return self.__dict__.get("eyes")
+```
+
+* Defines how the attribute `eyes` is *read*.
+* `self.eyes` now calls this getter.
+
+### Setter:
+
+```python
+@eyes.setter
+def eyes(self, color):
+    self.__dict__["eyes"] = color
+```
+
+* Defines how the attribute `eyes` is *updated*.
+* `self.eyes = "blue"` will modify `__dict__` properly.
+
+---
+
+### **Property: hair**
+
+Works exactly like `eyes`.
+
+---
+
+### **4. Wrapper methods (required by tester)**
+
+The tester uses:
+
+```
+Joffrey.set_eyes("blue")
+Joffrey.get_eyes()
+```
+
+So you provide **legacy-style** getters and setters:
+
+```python
+def set_eyes(self, color):
+    self.eyes = color   # uses the property setter
+
+def get_eyes(self):
+    return self.eyes    # uses the property getter
+```
+
+These wrappers rely on the property, ensuring clean design.
+
+---
+
+### **5. Why Properties Are Needed Here**
+
+The subject says:
+
+> “You must use the Properties to change the physical characteristics.”
+
+Two reasons:
+
+### **1. Avoid overriding parent attributes incorrectly**
+
+Parents define `eyes` and `hair` differently.
+The exercise wants you to **centralize attribute control** in the `King` class.
+
+### **2. Ensure `__dict__` stays correct**
+
+The expected output checks:
+
+* keys must be `"eyes"` and `"hair"`
+* values must update correctly
+
+Using the property ensures all changes pass through controlled code.
+
+---
+
+### **6. Why Multiple Inheritance Matters**
+
+The class:
+
+```python
+class King(Baratheon, Lannister):
+```
+
+Creates the **diamond problem**:
+
+```
+      Character
+      /      \
+Baratheon   Lannister
+      \      /
+        King
+```
+
+Python resolves this using the **Method Resolution Order (MRO)**.
+Thus, only one of the parent constructors runs on `super()` → Baratheon’s.
+
+This explains why Joffrey starts as:
+
+```python
+{'family_name': 'Baratheon', 'eyes': 'brown', 'hairs': 'dark'}
+```
+
+---
+
+### **7. Key Takeaway Notions From This Exercise**
+
+This exercise is specifically designed to teach several advanced Python OOP concepts.
+
+
+#### **✓ 1. Multiple Inheritance**
+
+You learn how a class can inherit from **two parents** and how MRO determines:
+
+* which constructor runs,
+* which methods get priority.
+
+---
+
+#### **✓ 2. Method Resolution Order (MRO)**
+
+In:
+
+```python
+class King(Baratheon, Lannister)
+```
+
+the order matters:
+
+`King → Baratheon → Lannister → Character → object`
+
+This affects initialization and method lookup.
+
+---
+
+#### **✓ 3. Properties (`@property`, setter)**
+
+You learn how to:
+
+* control access to attributes,
+* validate or intercept changes,
+* design clean and safe APIs.
+
+Properties allow you to treat methods **as if they were attributes**:
+
+```python
+Joffrey.eyes = "blue"   # calls setter
+Joffrey.eyes            # calls getter
+```
+
+---
+
+#### **✓ 4. Public API vs internal logic**
+
+You create modern property access:
+
+```python
+@eyes.setter
+@eyes.getter
+```
+
+but also support the old “Java-style” methods:
+
+```
+set_eyes()
+get_eyes()
+```
+
+because the tester expects them.
+
+---
+
+#### **✓ 5. Manipulating `__dict__` explicitly**
+
+To guarantee correct tester output, you update attributes directly in `self.__dict__`.
+
+This teaches:
+
+* how Python stores instance attributes internally,
+* how property decorators interact with instance storage.
+
+---
+
+#### **✓ 6. Avoiding duplication in constructors**
+
+You do **not** redefine attributes—inheritance handles them.
+You only override behavior where necessary (with properties).
+
 
 ---
 

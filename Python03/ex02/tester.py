@@ -11,7 +11,7 @@ print(Joffrey.get_eyes())
 print(Joffrey.get_hairs())
 print(Joffrey.__dict__)
 
-# Example output when running this test:
+# OUTPUT ###
 # {'first_name': 'Joffrey', 'is_alive': True, 'family_name':
 #  'Baratheon', 'eyes': 'brown', 'hair': 'dark'}
 # blue
