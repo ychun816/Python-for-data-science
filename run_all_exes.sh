@@ -33,8 +33,8 @@ REPOS=(
     # "Python00"
     # "Python01"
     # "Python02"
-    "Python03"
-    # "Python04"
+    # "Python03"
+    "Python04"
 )
 
 
