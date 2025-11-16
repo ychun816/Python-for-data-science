@@ -30,10 +30,10 @@ TEST_ARG="Python 3.0, released in 2008, was a major revision that is not complet
 
 # Explicit list of repos. Comment out lines for repos you don't want to run.
 REPOS=(
-    # "Python00"
-    # "Python01"
-    # "Python02"
-    # "Python03"
+    "Python00"
+    "Python01"
+    "Python02"
+    "Python03"
     "Python04"
 )
 
@@ -117,10 +117,20 @@ for repo_name in "${REPOS[@]}"; do
 
                 # ex02 expects two country args
                 elif [ "$exbase" = "ex02" ]; then
-                    # ex02 requires population_total.csv under repo/data. If the
-                    # CSV is missing or broken, skip this exercise to avoid
-                    # spurious failures in the batch runner.
+                    # ex02 requires population_total.csv under repo/data.
+                    # Many repos don't include the data folder; if the file is
+                    # missing, create a temporary symlink pointing to the
+                    # canonical copy in Python02/data when available.
                     poppath="$repo/data/population_total.csv"
+                    central_pop="$ROOT_DIR/Python02/data/population_total.csv"
+                    if [ ! -f "$poppath" ] && [ -f "$central_pop" ]; then
+                        # ensure repo data dir exists
+                        mkdir -p "$repo/data"
+                        ln -s "$central_pop" "$poppath" || true
+                        cleanup_poplink=true
+                    else
+                        cleanup_poplink=false
+                    fi
                     if [ ! -f "$poppath" ]; then
                         echo "[skip] population_total.csv not found; skipping ex02"
                         exit 0
@@ -157,6 +167,10 @@ for repo_name in "${REPOS[@]}"; do
                 # Cleanup any temporary symlink created for ex01
                 if [ "${cleanup_link:-false}" = true ]; then
                     rm -f "$repo/$exbase/life_expectancy_years.csv" || true
+                fi
+                # Cleanup any temporary symlink created for ex02
+                if [ "${cleanup_poplink:-false}" = true ]; then
+                    rm -f "$repo/data/population_total.csv" || true
                 fi
             ) || echo "[error] script $py exited with code $?"
             ran=true
