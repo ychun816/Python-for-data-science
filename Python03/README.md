@@ -1,6 +1,6 @@
-# OOP (Object Oriented Programming)
+# Python03 | OOP (Object Oriented Programming)
 [Back to Index](../README.md)
-
+---
 ## 🧠 Python vs C++ — Object-Oriented Programming Comparison
 
 | **Concept / Feature**      | **Python**                                       | **C++**                                           | **Explanation (English + 中文說明)**                                                                                                                                    |

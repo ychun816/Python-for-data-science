@@ -1,5 +1,5 @@
 
-# Python00
+# Python00 | Basics
 
 [Back to Index](../README.md)
 
