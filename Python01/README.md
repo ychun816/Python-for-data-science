@@ -1,36 +1,18 @@
 
+# Python02 
+
 [Back to Index](../README.md)
-
-# Python01 — Exercise index
-
-This folder contains short exercises (ex00..ex05). Each exercise has
-its own `README.md` explaining the purpose, the important libraries and
-syntax used, and how to run the demo/tester for that exercise.
-
-Prerequisites
-- Python 3.10+ (this project uses the ``|`` union type in annotations)
-- Install the Python dependencies listed in `requirements.txt`:
-
-```bash
-python -m pip install --user --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-Per-exercise files (open any `exNN/README.md` for details):
-- `ex00/README.md` — BMI utilities (give_bmi)
-- `ex01/README.md` — 2D array slicing (NumPy)
-- `ex02/README.md` — Image loader (Pillow + NumPy)
-- `ex03/README.md` — Zoom & grayscale (NumPy + Pillow + matplotlib)
-- `ex04/README.md` — Crop / transpose (NumPy + matplotlib)
-- `ex05/README.md` — Filters and display (NumPy + matplotlib)
-
-Notes
-- Image demos expect sample images such as `animal.jpeg` or
-  `landscape.jpg`. If those files are not in the current working
-  directory, the loader will try `Python01/srcs/` as a fallback.
-
 ---
-# ex00 — BMI utilities
+
+## Main libraries used
+- numbPy explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkWhZSaaxx
+- PIL(Pillow) explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/r1b6q_C6eg
+- Brief on image handling libraries : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/Sk13McAaee
+---
+
+## Brief on each exercise
+
+### ex00 — BMI utilities
 
 Files
 - `give_bmi.py` — compute BMI values for lists of heights and weights.
@@ -43,7 +25,7 @@ Key concepts and libraries
 - Defensive checks: `isinstance` and explicit `raise` for input validation.
 - Guarded entry: `if __name__ == '__main__'` keeps the module import-safe.
 ---
-# ex01 — 2D array slicing
+### ex01 — 2D array slicing
 
 Files
 - `array2D.py` — helper that slices 2D lists using NumPy.
@@ -58,7 +40,7 @@ Key concepts and libraries
   indices are supported.
 - Convert back to Python lists with `.tolist()` when needed.
 ---
-# ex02 — Image loader
+### ex02 — Image loader
 
 Files
 - `load_image.py` — loads JPEG images using Pillow and returns an RGB
@@ -74,7 +56,7 @@ Key concepts and libraries
 - The loader prints errors to stderr and returns `None` instead of
   raising, which simplifies use in small demo scripts.
 ---
-# ex03 — Zoom & grayscale
+### ex03 — Zoom & grayscale
 
 Files
 - `zoom.py` — load an image, convert to grayscale, crop/resize to zoom,
@@ -89,7 +71,7 @@ Key concepts and libraries
   luminance weights converts RGB to grayscale efficiently.
 - `astype(np.uint8)` converts floats back to 0..255 byte range.
 ---
-# ex04 — Crop / transpose
+### ex04 — Crop / transpose
 
 Files
 - `rotate.py` — crop the center square of an image, transpose rows/cols,
@@ -118,3 +100,6 @@ Key concepts and libraries
   and a SIGINT handler to close GUI windows on Ctrl+C.
 - Be careful with module-level mutable state in larger projects; it's
   fine for small exercise scripts but should be avoided in production.
+
+---
+

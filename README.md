@@ -30,139 +30,9 @@ https://wiki.python.org/moin/BeginnersGuide
 
 ---
 
-## 0️⃣ Python00
-### Basic Types
-Python has a few basic built-in data types that are **super important**:
-- **List** 📋  
-- **Tuple** 🎁  
-- **Set** 🔀  
-- **Dictionary (dict)** 📖  
+## Basic Concept Correcting
 
-### List 📋
-- **Definition**: An ordered, changeable collection that can hold duplicates.
-- **Syntax**: Use square brackets `[]`.
-- **features**:
-Ordered (keeps order).
-Mutable (can be changed).
-Allows duplicates.
-```python
-# Example
-fruits = ["apple", "banana", "cherry"]
-print(fruits[0])   # apple (first item, index 0)
-
-# Change value
-fruits[1] = "blueberry"
-print(fruits)      # ['apple', 'blueberry', 'cherry']
-
-# Add new value
-fruits.append("orange")
-print(fruits)      # ['apple', 'blueberry', 'cherry', 'orange']
-```
-
-### Tuple 🎁
-- Definition: An ordered, unchangeable collection that can hold duplicates.
-- Syntax: Use parentheses ().
-- **features**:
-Ordered (like list).
-Immutable (cannot change after creation).
-Allows duplicates.
-```python
-# Example
-point = (10, 20)
-print(point[0])   # 10
-print(point[1])   # 20
-
-# Tuples cannot be changed
-# point[0] = 50   ❌ ERROR
-
-# To "modify", you must create a new tuple
-point = (50, point[1])
-print(point)      # (50, 20)
-
-```
-
-### Set 🔀
-- Definition: An unordered collection with no duplicates.
-- Syntax: Use curly braces {}.
-- features:
-Unordered (no index, order may change).
-Mutable (can add/remove).
-No duplicates.
-
-```python
-# Example
-colors = {"red", "green", "blue"}
-print(colors)        # {'green', 'blue', 'red'} (order is random!)
-
-# Add item
-colors.add("yellow")
-print(colors)        # {'yellow', 'green', 'blue', 'red'}
-
-# No duplicates
-colors.add("red")
-print(colors)        # {'yellow', 'green', 'blue', 'red'} (no change)
-
-```
-
-### Dictionary (dict) 📖
-- Definition: A collection of key → value pairs.
-- Syntax: Use curly braces {} with key: value.
-- features: 
-Stores key → value pairs.
-Keys must be unique.
-Values can be changed.
-Ordered since Python 3.7 (insertion order kept).
-
-
-### Summary Table of all types
-
-| Data Type    | Syntax Example          | Ordered? | Mutable? | Allows Duplicates? | How to Access / Modify                                          |
-| ------------ | ----------------------- | -------- | -------- | ------------------ | --------------------------------------------------------------- |
-| **List** 📋  | `["Hello", "World!"]`   | ✅ Yes    | ✅ Yes    | ✅ Yes              | By index → `list[0]` <br> Change → `list[1] = "Hi"`             |
-| **Tuple** 🎁 | `("Hello", "France!")`  | ✅ Yes    | ❌ No     | ✅ Yes              | By index → `tuple[0]` <br> (cannot modify, must recreate)       |
-| **Set** 🔀   | `{"Hello", "Paris!"}`   | ❌ No     | ✅ Yes    | ❌ No (only unique) | Check membership → `"Hello" in set` <br> Add → `set.add("new")` |
-| **Dict** 📖  | `{"Hello": "42Paris!"}` | ✅ Yes*   | ✅ Yes    | Keys ❌, Values ✅   | By key → `dict["Hello"]` <br> Change → `dict["Hello"] = "Hi"`   |
-
-> ℹ️ *Dictionaries keep insertion order in Python 3.7+ (so order is predictable now).
-
-### Common Built-in Exceptions (Python predefined errors)**
-
-```
-| Exception Name      | When it Happens                | Example                          |
-| ------------------- | ------------------------------ | -------------------------------- |
-| `FileNotFoundError` | When file path does not exist  | `open("no_file.txt")`            |
-| `ValueError`        | Wrong value type               | `int("abc")`                     |
-| `TypeError`         | Wrong data type used           | `"hi" + 5`                       |
-| `IndexError`        | List index out of range        | `[1,2][5]`                       |
-| `KeyError`          | Dictionary key not found       | `d = {"a":1}; d["b"]`            |
-| `ZeroDivisionError` | Dividing by zero               | `10 / 0`                         |
-| `ImportError`       | Import fails                   | `import not_existing_module`     |
-| `AttributeError`    | Object has no attribute        | `"hi".append(3)`                 |
-| `NameError`         | Variable not defined           | `print(x)`                       |
-| `RuntimeError`      | Generic runtime error          | `raise RuntimeError("oops")`     |
-| `SyntaxError`       | Invalid Python syntax          | `if True print("hi")`            |
-| `IndentationError`  | Wrong indentation              | (bad spacing)                    |
-| `OSError`           | System-related error           | File or OS issue                 |
-| `MemoryError`       | Out of memory                  | Very large data                  |
-| `StopIteration`     | When iterator runs out         | `next(it)` on exhausted iterator |
-| `EOFError`          | End of file input unexpectedly | `input()` from empty stdin       |
-```
-
-### Packaging
-- Python Package setup :
-https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkA5azaall
-
----
-
-## 1️⃣ Python01
-### libraries
-- numbPy explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/rkWhZSaaxx
-- PIL(Pillow) explain : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/r1b6q_C6eg
-- Brief on image handling libraries : https://hackmd.io/@QBrv51OvRPqs9dJjL2YIig/Sk13McAaee
-
-### Concept Correcting
-
-#### 🧱 1️⃣ “No code in the global scope”
+### “No code in the global scope”
 
 ##### 🔹 English
 
@@ -199,7 +69,7 @@ print("Hello!")  # runs immediately when imported
 
 ---
 
-#### ⚙️ 2️⃣ `if __name__ == "__main__":`
+### `if __name__ == "__main__":`
 
 ##### 🔹 English
 
@@ -231,7 +101,7 @@ if __name__ == "__main__":
 
 ---
 
-#### ⚡ 3️⃣ “Any exception not caught will invalidate the exercise”
+### “Any exception not caught will invalidate the exercise”
 
 ##### 🔹 English
 
@@ -256,7 +126,7 @@ def divide(a, b):
 
 ---
 
-#### 📖 4️⃣ “All your functions must have a documentation (**doc**)”
+### “All your functions must have a documentation (**doc**)”
 
 ###### 🔹 English
 
@@ -294,7 +164,7 @@ print(add.__doc__)
 
 ---
 
-#### 🧰 5️⃣ Flake8 — the “norm” checker
+### Flake8 — the “norm” checker
 
 ##### 🔹 English
 
@@ -332,7 +202,7 @@ It checks:
 
 ---
 
-#### 🧠 Special Variables Explained
+### 🧠 Special Variables Explained
 
 | Name       | English Explanation                                      | 中文解釋                         |
 | ---------- | -------------------------------------------------------- | ---------------------------- |
@@ -341,7 +211,7 @@ It checks:
 | `__doc__`  | String containing the function’s documentation           | 函式或模組的文件字串（說明文字）             |
 
 
-#### 🧭 Summary Table
+### 🧭 Summary Table
 
 | Concept        | Rule                                       | Example                           | 中文說明               |
 | -------------- | ------------------------------------------ | --------------------------------- | ------------------ |
@@ -353,7 +223,7 @@ It checks:
 
 ---
 
-#### 🧩 Python *can* run code globally
+### 🧩 Python *can* run code globally
 
 ✅ **Fact:**
 In Python, when you write code directly in the file (outside any function or class), it will **run immediately** when the file is executed or imported.
@@ -393,7 +263,7 @@ That means — **global code always runs**, even if you just import the file!
 
 ---
 
-#### 🚫 Why the subject forbids global code
+### 🚫 Why the subject forbids global code
 
 Because when someone imports your file (for testing or reuse),
 you **don’t want your code to execute automatically** — it should only run when you *explicitly* tell it to.
@@ -412,7 +282,7 @@ if __name__ == "__main__":
 
 ---
 
-#### ⚙️ 2️⃣ How `__name__` and `"__main__"` work
+### How `__name__` and `"__main__"` work
 
 Python automatically sets a special variable:
 
@@ -486,85 +356,9 @@ if __name__ == "__main__":
     main()
 ```
 
-## Exercise learner notes (moved from exercise source files)
-
-These concise learner notes were moved from inline comment blocks in
-the exercise source files into this central location. They summarize
-the important libraries, Python idioms, and behaviors used in each
-exercise so you can quickly review them while working through the
-materials.
-
-ex00 — BMI utilities (ex00/give_bmi.py)
-- Uses the standard library only (``sys`` for CLI integration).
-- Concepts: type hints (``list[int | float]``), list comprehensions,
-    ``zip`` to pair corresponding items, ``isinstance`` checks and
-    explicit ``raise`` for input validation, and the ``if __name__ == '__main__'``
-    guard to keep modules import-safe.
-
-ex01 — 2D array slicing (ex01/array2D.py)
-- NumPy (``import numpy as np``) provides ndarrays, fast numeric ops
-    and convenient slicing. Use ``np.array(list_of_lists)`` to convert
-    Python lists, inspect ``.ndim`` and ``.shape``, slice rows with
-    ``arr[start:end]``, and convert back to Python lists with
-    ``.tolist()`` when needed.
-
-ex02 — Image loader (ex02/load_image.py)
-- Pillow (PIL) for image I/O and NumPy for numeric arrays; ``Path``
-    from pathlib improves cross-platform path handling.
-- Patterns: ``Image.open(path)`` and ``.convert('RGB')`` to ensure
-    3-channel images; ``np.array(img)`` yields a (H, W, C) ndarray.
-    The loader uses a repository-local fallback path and returns ``None``
-    (and prints to stderr) on failure to keep demos simple.
-
-ex03 — Zoom & grayscale (ex03/zoom.py)
-- Uses NumPy for array math, Pillow for resizing (``Image.fromarray``),
-    and matplotlib for display.
-- Key syntax: ``rgb[..., :3]`` to select channels, ``np.dot`` with
-    luminance weights to convert RGB→grayscale, and ``astype(np.uint8)``
-    to cast floats to byte-range values. The code defends against ``None``
-    inputs and handles ``KeyboardInterrupt`` cleanly during display.
-
-ex04 — Crop / transpose (ex04/rotate.py)
-- Same loader pattern (Pillow + NumPy). Cropping uses array slicing to
-    extract centered squares; transposing uses ``.T`` to swap axes. For
-    color images the example converts to grayscale so the transpose is 2D.
-
-ex05 — Filters and display (ex05/pimp_image.py)
-- Demonstrates NumPy filters: inversion (``255 - arr``), channel masking
-    (``arr[:, :, 1] = 0``), and grayscale stacking.
-- Shows process helpers: module-level collection of results, ``atexit.register``
-    to display on normal exit, and SIGINT handling to close GUI windows on Ctrl+C.
-
-
-來控制只在「直接執行」時執行，不在匯入時執行。
-
 ---
 
-### ⚙️ `__name__` 與 `"__main__"` 的關係
 
-Python 會自動設定一個特殊變數：
-
-* 當直接執行檔案時 → `__name__ = "__main__"`
-* 當被匯入時 → `__name__ = "檔案名稱"`
-
-所以：
-
-```python
-if __name__ == "__main__":
-```
-
-代表「僅當此檔案被直接執行時，才執行以下程式」。
-
----
-
-#### 🧠 中文摘要表
-
-| 狀況                      | `__name__` 的值 | 是否執行 `if __name__ == "__main__"` |
-| ----------------------- | ------------- | -------------------------------- |
-| 直接執行檔案 (`python 檔案.py`) | `"__main__"`  | ✅ 會執行                            |
-| 被匯入成模組 (`import 檔案`)    | `"檔案名稱"`      | ❌ 不執行                            |
-
----
 
 ### 🧱 ASCII Workflow Diagram
 
@@ -611,18 +405,11 @@ When imported → still prints "Run!"
 
 ---
 
-## 2️⃣ Python02 
-Excellent question — this gets into some of Python’s most important conventions and special syntax.
-Let’s go step-by-step so it’s crystal clear.
-
----
-
-## 🔹 1. `__main__` and Double Underscores (`__name__`, etc.)
+## 🔹 `__main__` and Double Underscores (`__name__`, etc.)
 
 Python uses **double underscores** (`__like_this__`) for *special built-in names* — also known as **dunder names** ("double underscore").
 They’re not just decoration — they have special meanings in the Python runtime.
 
-Here’s a clear table of the **most relevant ones** you’ll see often:
 
 | Syntax                   | Name                                     | When It’s Used / What It Means                                                                             | Example                                          |
 | :----------------------- | :--------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :----------------------------------------------- |
@@ -708,33 +495,3 @@ Think of it like:
 * `no underscore` = “public interface”
 
 ---
-
-
-## 3️⃣ Python03
-## 4️⃣ Python04
-
-
-
-```bash
-¬_¬　ᙏ̤̫　ᕑᗢᓫ 　　. ̫ .　ꪔ̤̮　ꈍꈊꈍ ꪔ̤̥
-
-ꪔ̤̱　ᴗ ·̫ ᴗ　･o･　˃̵ᴗ˂̵　·ꙫ·　˙³˙　˙Ⱉ˙ 　
-
-◞‸◟　•ᴥ•　`з´　˘ᗜ˘　ᵔᴥᵔ　°⌓°　 •̆₃•̑ 
-
-˃̵ ֊ ˂̵　˶’ᵕ‘˶　´••` 　ᵔ⤙ᵔ 　 ͒•∘̬• ͒　•᎔•　՞••՞
-
-ᵒ̴̶̷̥́ ·̫ ᵒ̴̶̷̣̥̀　•᷄ࡇ•᷅⠀ꃋᴖꃋ　ˆ𐃷ˆ　
-
-> 𐢭 <　'ㅅ'　ᵔᴗᵔ　˃ᴗ˂　ᴖ.ᴖ⠀'
-
-•⤙•　• ﻌ -　•︿•̀　 >ᯅ<　 •͈ ₃ •͈
-
->ヮ<⠀ ⠀ ˃̵ᴗ˂̵⠀⠀ ᴖ ᴈ ᴖ ⠀⠀ ᵔᴗᵔ 
-
-ꃋᴖꃋ ⠀⠀ ˘ᵕ˘⠀⠀ ˘͈ᵕ˘͈⠀⠀ •᷄ࡇ•᷅ 
-
-⇀‸↼‶ ⠀⠀⎚-⎚⠀ ⠀ `⎚⩊⎚´⠀ ⠀ >ㅅ<
-
-ˆ𐃷ˆ ⠀⠀ ⪩. .⪨⠀⠀ ＞ᨓ＜ ⠀ ⠀ᯣ_ᯣ
-```
