@@ -164,66 +164,7 @@ print(add.__doc__)
 
 ---
 
-### Flake8 — the “norm” checker
-
-##### 🔹 English
-
-`flake8` is a **style and syntax checker**.
-It ensures your code follows the official **Python coding standard (PEP 8)**.
-
-Install and use:
-
-```bash
-pip install flake8
-alias norminette=flake8
-norminette yourfile.py
-```
-
-It checks:
-
-* Indentation (4 spaces)
-* Line too long (>79 chars)
-* Missing docstrings
-* Unused imports
-* Code in global scope (forbidden)
-
-##### 🔹 中文（繁體）
-
-`flake8` 是一個 **Python 程式規範檢查工具**。
-會自動幫你檢查程式是否符合 Python 標準（PEP8）。
-
-它會檢查：
-
-* 縮排（4 個空白）
-* 每行長度
-* 是否有文件字串（docstring）
-* 是否有未使用的變數或 import
-* 是否有在全域範圍直接執行程式
-
----
-
-### 🧠 Special Variables Explained
-
-| Name       | English Explanation                                      | 中文解釋                         |
-| ---------- | -------------------------------------------------------- | ---------------------------- |
-| `__name__` | Identifier of the module; `"__main__"` when run directly | 模組名稱；當直接執行檔案時等於 `"__main__"` |
-| `__main__` | The name Python assigns to the top-level script          | Python 對主程式檔案給的名稱            |
-| `__doc__`  | String containing the function’s documentation           | 函式或模組的文件字串（說明文字）             |
-
-
-### 🧭 Summary Table
-
-| Concept        | Rule                                       | Example                           | 中文說明               |
-| -------------- | ------------------------------------------ | --------------------------------- | ------------------ |
-| No global code | Only define functions, no direct execution | `main()` only                     | 不要在全域範圍執行程式        |
-| Entry point    | `if __name__ == "__main__":`               | Run only if executed directly     | 只在被直接執行時才呼叫 main() |
-| Documentation  | Use `"""..."""` docstring                  | Inside every function             | 每個函式必須有說明文字        |
-| Error Handling | `try / except`                             | Catch all possible runtime errors | 必須處理所有例外錯誤         |
-| Code Style     | `flake8`                                   | Check style and docstrings        | 程式必須符合 PEP8 規範     |
-
----
-
-### 🧩 Python *can* run code globally
+### Python *can* run code globally
 
 ✅ **Fact:**
 In Python, when you write code directly in the file (outside any function or class), it will **run immediately** when the file is executed or imported.
@@ -308,58 +249,6 @@ means “run the next block **only when this file is executed directly**”.
 
 ---
 
-###### 🇹🇼 中文（繁體）
-
-#### ✅ Python 可以在全域範圍執行程式碼
-
-當你在檔案最外層（非函式或類別中）寫程式碼時，
-它會 **立即被執行**，無論是直接執行或是被匯入。
-
-範例：
-
-```python
-# 檔案：hello.py
-print("這行會直接執行")
-```
-
-執行：
-
-```
-python hello.py
-```
-
-結果：
-
-```
-這行會直接執行
-```
-
-當你在別的檔案：
-
-```python
-import hello
-```
-
-也會輸出同樣內容（因為全域程式碼會被執行）。
-
----
-
-#### 🚫 為什麼題目要求不要用全域程式碼？
-
-因為如果別的程式或測試檔匯入你的模組，
-它就會「不小心」執行到你的程式。
-所以題目要求把所有邏輯都放在 `main()` 裡面，
-並用：
-
-```python
-if __name__ == "__main__":
-    main()
-```
-
----
-
-
-
 ### 🧱 ASCII Workflow Diagram
 
 #### ❌ Without `main()` — global code (bad)
@@ -405,7 +294,7 @@ When imported → still prints "Run!"
 
 ---
 
-## 🔹 `__main__` and Double Underscores (`__name__`, etc.)
+### `__main__` and Double Underscores (`__name__`, etc.)
 
 Python uses **double underscores** (`__like_this__`) for *special built-in names* — also known as **dunder names** ("double underscore").
 They’re not just decoration — they have special meanings in the Python runtime.
@@ -446,9 +335,7 @@ if __name__ == "__main__":
 
 ---
 
-## 🔹 2. Single Underscore Prefix (`_name`)
-
-Now, about `_call_loader` and that **underscore prefix**.
+###  Single Underscore Prefix (`_name`)
 
 This is **not special syntax** like `__main__` — it’s a **naming convention** meaning **“internal use”** or **“private”** within that file or module.
 
@@ -494,4 +381,3 @@ Think of it like:
 * `_single` = “private helper”
 * `no underscore` = “public interface”
 
----
