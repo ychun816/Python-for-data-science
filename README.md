@@ -18,14 +18,11 @@
 - Python Tutorial for Beginners - Learn Python in 5 Hours [FULL COURSE](https://www.youtube.com/watch?v=t8pPdKYpowI)
 
 ## Documentation
-- Python Standard Library
-https://docs.python.org/3/library/
+- [Python Standard Library](https://docs.python.org/3/library/)
 
-- Python Tutorial
-https://www.w3schools.com/python/
+- [Python Tutorial](https://www.w3schools.com/python/)
 
-- Beginner's Guide to Python
-https://wiki.python.org/moin/BeginnersGuide
+- [Beginner's Guide to Python](https://wiki.python.org/moin/BeginnersGuide)
 
 ---
 
