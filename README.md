@@ -12,9 +12,10 @@
 ---
 
 ## Tutorial videos
+- Python Tutorial for Beginners 1: [Install and Setup for Mac and Windows](https://www.youtube.com/watch?v=YYXdXT2l-Gg)
+- [Python Tutorials](https://www.youtube.com/playlist?list=PL-osiE80TeTt2d9bfVyTiXJA-UTHn6WwU)
 - Python for Beginners – Full Course [Programming Tutorial]
 https://www.youtube.com/watch?v=eWRfhZUzrAc
-
 - Python Tutorial for Beginners - Learn Python in 5 Hours [FULL COURSE]
 https://www.youtube.com/watch?v=t8pPdKYpowI
 
