@@ -4,6 +4,9 @@
 
 - [Tutorial videos](#tutorial-vids)
 - [Documentation](#documentation)
+- [Basic Concept Correcting](#Basic-Concept-Correcting)
+
+### Index 
 - [Python00 (Basics)](Python00/README.md)
 - [Python01 (Exercises)](Python01/README.md)
 - [Python02 (Data & CSV)](Python02/README.md)
