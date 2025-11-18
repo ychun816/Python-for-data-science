@@ -8,7 +8,7 @@
 
 ### Index 
 - [Python00 (Basics)](Python00/README.md)
-- [Python01 (Exercises)](Python01/README.md)
+- [Python01 (Array)](Python01/README.md)
 - [Python02 (Data & CSV)](Python02/README.md)
 - [Python03 (OOP)](Python03/README.md)
 - [Python04 (Functions & Decorators)](Python04/README.md)
