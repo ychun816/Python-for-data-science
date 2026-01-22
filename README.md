@@ -71,6 +71,28 @@ which python
 python --version # python3 --version
 deactivate
 ```
+---
+
+## Basic library setup 
+```bash
+Goal,Command
+# Install a package
+pip install <package_name>
+
+# Uninstall a package
+pip uninstall <package_name>
+
+# List installed packages
+pip list
+
+# Save list to file
+pip freeze > requirements.txt
+
+# Install from file
+pip install -r requirements.txt
+```
+
+---
 
 ## Basic Concept Correcting
 
