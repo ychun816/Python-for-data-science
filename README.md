@@ -29,6 +29,49 @@
 
 ---
 
+## python env setup
+- check if installed (version , path)
+```bash
+# Windows
+python --version
+which python
+
+# macOS / Linux
+python3 --version
+which python3
+```
+- create environment for running python
+> Create a new folder named `.venv` inside current directory.
+> This folder will contain a standalone copy of Python and pip.
+```bash
+# Windows
+python -m venv .venv
+
+# macOS / Linux
+python3 -m venv .venv
+```
+- Activate the Environment
+> "Activating" tells terminal to stop using the global Python installed on computer and start using the local one inside the `.venv` folder.
+```bash
+# window
+.venv\Scripts\activate
+# macOS / Linux
+source .venv/bin/activate
+```
+- Verify terminal is actually using the virtual environment.
+```bash
+# Windows
+where python
+
+# macOS / Linux
+which python
+```
+- check & exit(deactivate)
+```bash
+python --version # python3 --version
+deactivate
+```
+
 ## Basic Concept Correcting
 
 ### “No code in the global scope”
